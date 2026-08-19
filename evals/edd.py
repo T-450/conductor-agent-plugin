@@ -16,6 +16,11 @@ import json
 import argparse
 from pathlib import Path
 
+# Windows compatibility for UTF-8 output in CI
+if sys.platform == "win32":
+    sys.stdout.reconfigure(encoding='utf-8', errors='replace')
+    sys.stderr.reconfigure(encoding='utf-8', errors='replace')
+
 # Add evals directory to sys.path
 base_eval_dir = Path(__file__).resolve().parent
 if str(base_eval_dir) not in sys.path:
