@@ -102,6 +102,7 @@ agy plugins install https://github.com/T-450/conductor-agent-plugin
 | `conductor-review` | Audits completed code against standards | Review report with pass/fail findings |
 | `conductor-status` | Shows project progress and task counts | Status summary in terminal |
 | `conductor-revert` | Reverts a track, phase, or task safely | Git revert commits and plan resets |
+| `conductor-orchestrate` | Orchestrates planning, implement, and review subagents per phase with TDD and pause points | Updates `conductor/tracks/<id>/plan.md`<br>Updates `conductor/tracks.md` |
 
 ---
 
@@ -129,15 +130,19 @@ conductor-pi/
 ├── bin/
 │   └── conductor               # Node.js CLI entrypoint
 ├── rules/
-│   ├── conductor_pi.md          # Pi interaction rules
-│   └── conductor_antigravity.md # Antigravity interaction rules
+│   ├── conductor_pi.md                     # Pi interaction rules
+│   ├── conductor_antigravity.md            # Antigravity interaction rules
+│   ├── conductor_orchestrate_pi.md         # Pi/Oh-My-Pi subagent dispatch
+│   ├── conductor_orchestrate_copilot.md    # Copilot CLI subagent dispatch
+│   └── conductor_orchestrate_agy.md        # Antigravity CLI subagent dispatch
 ├── skills/
 │   ├── conductor-setup/        # Project setup skill and style guides
 │   ├── conductor-new-track/    # Track planning skill
 │   ├── conductor-implement/    # Task execution skill
 │   ├── conductor-review/       # Code review skill
 │   ├── conductor-status/       # Progress report skill
-│   └── conductor-revert/       # Git revert skill
+│   ├── conductor-revert/       # Git revert skill
+│   └── conductor-orchestrate/  # Subagent-driven development skill
 └── evals/
     └── run_evals.py            # Automated test suite
 ```

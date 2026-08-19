@@ -15,10 +15,14 @@
     "./skills/conductor-implement",
     "./skills/conductor-review",
     "./skills/conductor-status",
-    "./skills/conductor-revert"
+    "./skills/conductor-revert",
+    "./skills/conductor-orchestrate"
   ],
   "rules": [
     "./rules/conductor_pi.md",
-    "./rules/conductor_antigravity.md"
+    "./rules/conductor_antigravity.md",
+    "./rules/conductor_orchestrate_pi.md",
+    "./rules/conductor_orchestrate_copilot.md",
+    "./rules/conductor_orchestrate_agy.md"
   ]
 }

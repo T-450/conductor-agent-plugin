@@ -1,0 +1,19 @@
+{
+  "id": "orchestrate_plan_approval_pause",
+  "name": "Conductor Orchestrate: Plan Approval Pause",
+  "category": "capability",
+  "grader_type": "rule",
+  "description": "Tests that conductor-orchestrate presents the plan and enforces the mandatory stop before implementation, then writes the approved plan into the track plan.md.",
+  "expected": {
+    "regex_patterns": [
+      "MANDATORY STOP",
+      "Phase 1:",
+      "plan\\.md"
+    ],
+    "must_contain": [
+      "conductor/tracks/",
+      "APPROVED"
+    ]
+  },
+  "mock_output": "# Track Orchestration: user-authentication\n\n## Plan (3 phases)\n\n1. **Phase 1: User model and schema**\n    - Objective: Create User schema with email and password fields\n    - Files: models/user.js, test/models/user.test.js\n    - Tests: user model validation and password hashing\n\n2. **Phase 2: Registration endpoint**\n3. **Phase 3: Login endpoint and JWT middleware**\n\n## Open Questions\n1. Use bcrypt for password hashing? Yes / argon2\n\nMANDATORY STOP: waiting for your approval before implementation starts.\n\nAfter approval the plan is written to conductor/tracks/user-authentication/plan.md as checkbox phases.\n\nReview status vocabulary: APPROVED | NEEDS_REVISION | FAILED"
+}

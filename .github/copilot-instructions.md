@@ -61,6 +61,17 @@ When the user requests any of the following operations, execute the correspondin
 2. Confirm strategy: Safe Revert (`git revert`) or Hard Reset (`git reset --hard`).
 3. Reset task checkboxes in `plan.md` back to pending `[ ]` and commit status reset.
 
+### G. `/conductor-orchestrate` or "Orchestrate with subagents"
+1. Read `conductor/tracks.md` and select the track, or invoke `conductor-new-track` if none exists.
+2. Delegate research to the `orchestra-planning` custom agent; it returns findings only.
+3. Draft a 3-10 phase plan and present it. Stop for user approval before any implementation.
+4. For each phase: delegate implementation to `orchestra-implement` (strict TDD), then review with `orchestra-code-review`.
+   - `APPROVED`: present summary and commit message, then stop for the user to commit.
+   - `NEEDS_REVISION`: re-dispatch implementation with the review feedback (max 2 rounds).
+   - `FAILED`: stop and ask the user for guidance.
+5. After each approved phase, append `<!-- Phase N review: VERDICT -->` to `conductor/tracks/<track_id>/plan.md` and mark tasks `[x]` with commit SHAs after the user commits.
+6. On completion, mark the track `[x]` in `conductor/tracks.md` and present the final report.
+
 ---
 
 ## 3. General Conventions

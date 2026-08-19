@@ -47,6 +47,7 @@ When Conductor is installed in the project, the agent SHOULD automatically route
 | Check project status | "How is our track progress going?" / "Show current project status" | `conductor-status` |
 | Code review & audit | "Review completed work" / "Audit code against track plan" | `conductor-review` |
 | Revert track or task | "Revert the last completed task" / "Undo track changes" | `conductor-revert` |
+| Orchestrate a track with subagents | "Orchestrate this track with subagents" / "Run subagent-driven development" | `conductor-orchestrate` |
 
 ## 3. Skill & File Path Discovery
 

@@ -35,6 +35,7 @@ def test_skills_frontmatter(base_dir: Path):
         "conductor-review",
         "conductor-status",
         "conductor-revert",
+        "conductor-orchestrate",
     ]
     for s in skills:
         skill_path = base_dir / "skills" / s / "SKILL.md"
@@ -55,6 +56,9 @@ def test_rules(base_dir: Path):
     rules = [
         base_dir / "rules" / "conductor_pi.md",
         base_dir / "rules" / "conductor_antigravity.md",
+        base_dir / "rules" / "conductor_orchestrate_pi.md",
+        base_dir / "rules" / "conductor_orchestrate_copilot.md",
+        base_dir / "rules" / "conductor_orchestrate_agy.md",
     ]
     for r in rules:
         if not r.exists():

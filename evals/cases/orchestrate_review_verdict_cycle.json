@@ -1,0 +1,17 @@
+{
+  "id": "orchestrate_review_verdict_cycle",
+  "name": "Conductor Orchestrate: Review Verdict Cycle",
+  "category": "regression",
+  "grader_type": "rule",
+  "description": "Tests that the implementation cycle handles review verdicts and records the phase review in plan.md with a commit pause.",
+  "expected": {
+    "must_contain": [
+      "APPROVED",
+      "NEEDS_REVISION",
+      "FAILED",
+      "Phase 1 review",
+      "commit"
+    ]
+  },
+  "mock_output": "## Phase 1 of 3: User model and schema\n\nImplement subagent report:\n- Summary: Created User schema with email and password fields.\n- Files created/changed: models/user.js, test/models/user.test.js\n- Tests: user model validation, password hashing. All passing.\n\nCode review subagent report:\n## Code Review: User model and schema\n**Status:** APPROVED\n**Summary:** Implementation meets the phase objective and tests pass.\n**Strengths:**\n- TDD followed correctly\n**Issues Found:** None\n**Next Steps:** Proceed to commit.\n\nPhase review recorded in conductor/tracks/user-authentication/plan.md as <!-- Phase 1 review: APPROVED -->\n\nGit commit message:\nfeat: Add User model with password hashing\n\nMANDATORY STOP: make the commit, then tell me to proceed.\n\nVerdict vocabulary in use: APPROVED | NEEDS_REVISION | FAILED"
+}
