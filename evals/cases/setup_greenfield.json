@@ -1,0 +1,20 @@
+{
+  "id": "setup_greenfield",
+  "name": "Conductor Setup: Greenfield Scaffolding",
+  "category": "capability",
+  "grader_type": "rule",
+  "description": "Tests that conductor-setup correctly drafts product.md, tech-stack.md, workflow.md, and creates conductor/index.md for a new project.",
+  "expected": {
+    "regex_patterns": [
+      "# Project Context",
+      "\\[Product Definition\\]\\(\\./product\\.md\\)",
+      "\\[Tech Stack\\]\\(\\./tech-stack\\.md\\)",
+      "\\[Workflow\\]\\(\\./workflow\\.md\\)"
+    ],
+    "must_contain": [
+      "conductor/index.md",
+      "chore(conductor): Initialize project context and standards"
+    ]
+  },
+  "mock_output": "# Project Context\n\n## Definition\n- [Product Definition](./product.md)\n- [Product Guidelines](./product-guidelines.md)\n- [Tech Stack](./tech-stack.md)\n- [Workflow](./workflow.md)\n- [Code Style Guides](./code_styleguides/)\n\n## Capabilities\n- [Agent Skills](../.omp/skills/)\n\nCommitted: chore(conductor): Initialize project context and standards"
+}

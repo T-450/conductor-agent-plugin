@@ -1,0 +1,342 @@
+{
+  "timestamp": "2026-08-19T18:21:33Z",
+  "total_cases": 8,
+  "trials_per_case": 3,
+  "metrics": {
+    "pass@1": 1.0,
+    "pass^1": 1.0,
+    "pass@3": 1.0,
+    "pass^3": 1.0,
+    "pass@5": 0.0,
+    "pass^5": 0.0,
+    "overall_accuracy": 1.0,
+    "total_trials": 24,
+    "total_successes": 24,
+    "confidence_interval_95": {
+      "lower": 0.862,
+      "upper": 1.0
+    }
+  },
+  "cases": [
+    {
+      "case_id": "implement_task_lifecycle",
+      "name": "Conductor Implement: Task Lifecycle Progression",
+      "category": "capability",
+      "trials_count": 3,
+      "success_count": 3,
+      "pass_at_1": 1.0,
+      "pass_at_3": 1.0,
+      "pass_pow_3": 1.0,
+      "avg_latency_ms": 0.0,
+      "trials": [
+        {
+          "trial_index": 1,
+          "passed": true,
+          "score": 1.0,
+          "reasoning": "All rule and schema constraints satisfied.",
+          "latency_ms": 0.0,
+          "grader_type": "RuleGrader",
+          "output_sample": "Updated tracks.md: chore(conductor): Mark track 'User Authentication' as in progress\n\nPlan execution:\n- [x] Task: Create user table and model [commit: 85c37b7]\n- [x] Task: Implement JWT token generato"
+        },
+        {
+          "trial_index": 2,
+          "passed": true,
+          "score": 1.0,
+          "reasoning": "All rule and schema constraints satisfied.",
+          "latency_ms": 0.0,
+          "grader_type": "RuleGrader",
+          "output_sample": "Updated tracks.md: chore(conductor): Mark track 'User Authentication' as in progress\n\nPlan execution:\n- [x] Task: Create user table and model [commit: 85c37b7]\n- [x] Task: Implement JWT token generato"
+        },
+        {
+          "trial_index": 3,
+          "passed": true,
+          "score": 1.0,
+          "reasoning": "All rule and schema constraints satisfied.",
+          "latency_ms": 0.0,
+          "grader_type": "RuleGrader",
+          "output_sample": "Updated tracks.md: chore(conductor): Mark track 'User Authentication' as in progress\n\nPlan execution:\n- [x] Task: Create user table and model [commit: 85c37b7]\n- [x] Task: Implement JWT token generato"
+        }
+      ]
+    },
+    {
+      "case_id": "new_track_spec_plan",
+      "name": "Conductor New Track: Spec & Plan Generation",
+      "category": "capability",
+      "trials_count": 3,
+      "success_count": 3,
+      "pass_at_1": 1.0,
+      "pass_at_3": 1.0,
+      "pass_pow_3": 1.0,
+      "avg_latency_ms": 0.0,
+      "trials": [
+        {
+          "trial_index": 1,
+          "passed": true,
+          "score": 1.0,
+          "reasoning": "All rule and schema constraints satisfied.",
+          "latency_ms": 0.0,
+          "grader_type": "RuleGrader",
+          "output_sample": "# Specification: User Authentication\n\n## Overview\nImplement JWT-based user authentication.\n\n## Acceptance Criteria\n1. POST /api/auth/register creates user.\n2. POST /api/auth/login returns JWT.\n\n# Impl"
+        },
+        {
+          "trial_index": 2,
+          "passed": true,
+          "score": 1.0,
+          "reasoning": "All rule and schema constraints satisfied.",
+          "latency_ms": 0.0,
+          "grader_type": "RuleGrader",
+          "output_sample": "# Specification: User Authentication\n\n## Overview\nImplement JWT-based user authentication.\n\n## Acceptance Criteria\n1. POST /api/auth/register creates user.\n2. POST /api/auth/login returns JWT.\n\n# Impl"
+        },
+        {
+          "trial_index": 3,
+          "passed": true,
+          "score": 1.0,
+          "reasoning": "All rule and schema constraints satisfied.",
+          "latency_ms": 0.0,
+          "grader_type": "RuleGrader",
+          "output_sample": "# Specification: User Authentication\n\n## Overview\nImplement JWT-based user authentication.\n\n## Acceptance Criteria\n1. POST /api/auth/register creates user.\n2. POST /api/auth/login returns JWT.\n\n# Impl"
+        }
+      ]
+    },
+    {
+      "case_id": "revert_safe_rollback",
+      "name": "Conductor Revert: Git Revert Strategy",
+      "category": "regression",
+      "trials_count": 3,
+      "success_count": 3,
+      "pass_at_1": 1.0,
+      "pass_at_3": 1.0,
+      "pass_pow_3": 1.0,
+      "avg_latency_ms": 0.0,
+      "trials": [
+        {
+          "trial_index": 1,
+          "passed": true,
+          "score": 1.0,
+          "reasoning": "All rule and schema constraints satisfied.",
+          "latency_ms": 0.0,
+          "grader_type": "RuleGrader",
+          "output_sample": "Target: Revert Task 'Implement JWT token generator'\nCommits to Revert:\n  - 24c7fce ('feat(auth): implement token generator')\n\nExecuted: git revert --no-edit 24c7fce\nReset plan state to [ ]\nCommitted: "
+        },
+        {
+          "trial_index": 2,
+          "passed": true,
+          "score": 1.0,
+          "reasoning": "All rule and schema constraints satisfied.",
+          "latency_ms": 0.0,
+          "grader_type": "RuleGrader",
+          "output_sample": "Target: Revert Task 'Implement JWT token generator'\nCommits to Revert:\n  - 24c7fce ('feat(auth): implement token generator')\n\nExecuted: git revert --no-edit 24c7fce\nReset plan state to [ ]\nCommitted: "
+        },
+        {
+          "trial_index": 3,
+          "passed": true,
+          "score": 1.0,
+          "reasoning": "All rule and schema constraints satisfied.",
+          "latency_ms": 0.0,
+          "grader_type": "RuleGrader",
+          "output_sample": "Target: Revert Task 'Implement JWT token generator'\nCommits to Revert:\n  - 24c7fce ('feat(auth): implement token generator')\n\nExecuted: git revert --no-edit 24c7fce\nReset plan state to [ ]\nCommitted: "
+        }
+      ]
+    },
+    {
+      "case_id": "review_quality_gates",
+      "name": "Conductor Review: Quality Gates & Report",
+      "category": "capability",
+      "trials_count": 3,
+      "success_count": 3,
+      "pass_at_1": 1.0,
+      "pass_at_3": 1.0,
+      "pass_pow_3": 1.0,
+      "avg_latency_ms": 0.0,
+      "trials": [
+        {
+          "trial_index": 1,
+          "passed": true,
+          "score": 1.0,
+          "reasoning": "All rule and schema constraints satisfied.",
+          "latency_ms": 0.0,
+          "grader_type": "RuleGrader",
+          "output_sample": "## Review Report: User Authentication\n\n### Summary\nAll implementation tasks conform to the approved specification and style guides.\n\n### Verification Checks\n- [x] Plan Compliance: [Pass/Fail/Partial]\n"
+        },
+        {
+          "trial_index": 2,
+          "passed": true,
+          "score": 1.0,
+          "reasoning": "All rule and schema constraints satisfied.",
+          "latency_ms": 0.0,
+          "grader_type": "RuleGrader",
+          "output_sample": "## Review Report: User Authentication\n\n### Summary\nAll implementation tasks conform to the approved specification and style guides.\n\n### Verification Checks\n- [x] Plan Compliance: [Pass/Fail/Partial]\n"
+        },
+        {
+          "trial_index": 3,
+          "passed": true,
+          "score": 1.0,
+          "reasoning": "All rule and schema constraints satisfied.",
+          "latency_ms": 0.0,
+          "grader_type": "RuleGrader",
+          "output_sample": "## Review Report: User Authentication\n\n### Summary\nAll implementation tasks conform to the approved specification and style guides.\n\n### Verification Checks\n- [x] Plan Compliance: [Pass/Fail/Partial]\n"
+        }
+      ]
+    },
+    {
+      "case_id": "setup_brownfield_resumption",
+      "name": "Conductor Setup: Brownfield Resumption",
+      "category": "capability",
+      "trials_count": 3,
+      "success_count": 3,
+      "pass_at_1": 1.0,
+      "pass_at_3": 1.0,
+      "pass_pow_3": 1.0,
+      "avg_latency_ms": 0.0,
+      "trials": [
+        {
+          "trial_index": 1,
+          "passed": true,
+          "score": 1.0,
+          "reasoning": "All rule and schema constraints satisfied.",
+          "latency_ms": 0.0,
+          "grader_type": "RuleGrader",
+          "output_sample": "{\n  \"setup_complete\": false,\n  \"checklist\": {\n    \"product.md\": true,\n    \"product-guidelines.md\": true,\n    \"tech-stack.md\": false,\n    \"code_styleguides\": false,\n    \"workflow.md\": false\n  },\n  \"nex"
+        },
+        {
+          "trial_index": 2,
+          "passed": true,
+          "score": 1.0,
+          "reasoning": "All rule and schema constraints satisfied.",
+          "latency_ms": 0.0,
+          "grader_type": "RuleGrader",
+          "output_sample": "{\n  \"setup_complete\": false,\n  \"checklist\": {\n    \"product.md\": true,\n    \"product-guidelines.md\": true,\n    \"tech-stack.md\": false,\n    \"code_styleguides\": false,\n    \"workflow.md\": false\n  },\n  \"nex"
+        },
+        {
+          "trial_index": 3,
+          "passed": true,
+          "score": 1.0,
+          "reasoning": "All rule and schema constraints satisfied.",
+          "latency_ms": 0.0,
+          "grader_type": "RuleGrader",
+          "output_sample": "{\n  \"setup_complete\": false,\n  \"checklist\": {\n    \"product.md\": true,\n    \"product-guidelines.md\": true,\n    \"tech-stack.md\": false,\n    \"code_styleguides\": false,\n    \"workflow.md\": false\n  },\n  \"nex"
+        }
+      ]
+    },
+    {
+      "case_id": "setup_greenfield",
+      "name": "Conductor Setup: Greenfield Scaffolding",
+      "category": "capability",
+      "trials_count": 3,
+      "success_count": 3,
+      "pass_at_1": 1.0,
+      "pass_at_3": 1.0,
+      "pass_pow_3": 1.0,
+      "avg_latency_ms": 0.0,
+      "trials": [
+        {
+          "trial_index": 1,
+          "passed": true,
+          "score": 1.0,
+          "reasoning": "All rule and schema constraints satisfied.",
+          "latency_ms": 0.0,
+          "grader_type": "RuleGrader",
+          "output_sample": "# Project Context\n\n## Definition\n- [Product Definition](./product.md)\n- [Product Guidelines](./product-guidelines.md)\n- [Tech Stack](./tech-stack.md)\n- [Workflow](./workflow.md)\n- [Code Style Guides]("
+        },
+        {
+          "trial_index": 2,
+          "passed": true,
+          "score": 1.0,
+          "reasoning": "All rule and schema constraints satisfied.",
+          "latency_ms": 0.0,
+          "grader_type": "RuleGrader",
+          "output_sample": "# Project Context\n\n## Definition\n- [Product Definition](./product.md)\n- [Product Guidelines](./product-guidelines.md)\n- [Tech Stack](./tech-stack.md)\n- [Workflow](./workflow.md)\n- [Code Style Guides]("
+        },
+        {
+          "trial_index": 3,
+          "passed": true,
+          "score": 1.0,
+          "reasoning": "All rule and schema constraints satisfied.",
+          "latency_ms": 0.0,
+          "grader_type": "RuleGrader",
+          "output_sample": "# Project Context\n\n## Definition\n- [Product Definition](./product.md)\n- [Product Guidelines](./product-guidelines.md)\n- [Tech Stack](./tech-stack.md)\n- [Workflow](./workflow.md)\n- [Code Style Guides]("
+        }
+      ]
+    },
+    {
+      "case_id": "status_progress_calculation",
+      "name": "Conductor Status: Progress Metrics Arithmetic",
+      "category": "regression",
+      "trials_count": 3,
+      "success_count": 3,
+      "pass_at_1": 1.0,
+      "pass_at_3": 1.0,
+      "pass_pow_3": 1.0,
+      "avg_latency_ms": 0.0,
+      "trials": [
+        {
+          "trial_index": 1,
+          "passed": true,
+          "score": 1.0,
+          "reasoning": "All rule and schema constraints satisfied.",
+          "latency_ms": 0.0,
+          "grader_type": "RuleGrader",
+          "output_sample": "Project Status: In Progress\nPhases (total): 2\nTasks (total): 10\nCompleted: 8\nIn Progress: 1\nPending: 1\nProgress: 80%\nNext Action: Implement refresh token endpoint"
+        },
+        {
+          "trial_index": 2,
+          "passed": true,
+          "score": 1.0,
+          "reasoning": "All rule and schema constraints satisfied.",
+          "latency_ms": 0.0,
+          "grader_type": "RuleGrader",
+          "output_sample": "Project Status: In Progress\nPhases (total): 2\nTasks (total): 10\nCompleted: 8\nIn Progress: 1\nPending: 1\nProgress: 80%\nNext Action: Implement refresh token endpoint"
+        },
+        {
+          "trial_index": 3,
+          "passed": true,
+          "score": 1.0,
+          "reasoning": "All rule and schema constraints satisfied.",
+          "latency_ms": 0.0,
+          "grader_type": "RuleGrader",
+          "output_sample": "Project Status: In Progress\nPhases (total): 2\nTasks (total): 10\nCompleted: 8\nIn Progress: 1\nPending: 1\nProgress: 80%\nNext Action: Implement refresh token endpoint"
+        }
+      ]
+    },
+    {
+      "case_id": "view_layer_modal_ask",
+      "name": "Conductor View Layer: Pi ask Tool Schema",
+      "category": "regression",
+      "trials_count": 3,
+      "success_count": 3,
+      "pass_at_1": 1.0,
+      "pass_at_3": 1.0,
+      "pass_pow_3": 1.0,
+      "avg_latency_ms": 0.0,
+      "trials": [
+        {
+          "trial_index": 1,
+          "passed": true,
+          "score": 1.0,
+          "reasoning": "All rule and schema constraints satisfied.",
+          "latency_ms": 0.0,
+          "grader_type": "RuleGrader",
+          "output_sample": "{\n  \"questions\": [\n    {\n      \"id\": \"mode_selection\",\n      \"question\": \"Choose setup mode for Conductor:\",\n      \"options\": [\n        {\n          \"label\": \"Interactive Mode\",\n          \"description\""
+        },
+        {
+          "trial_index": 2,
+          "passed": true,
+          "score": 1.0,
+          "reasoning": "All rule and schema constraints satisfied.",
+          "latency_ms": 0.0,
+          "grader_type": "RuleGrader",
+          "output_sample": "{\n  \"questions\": [\n    {\n      \"id\": \"mode_selection\",\n      \"question\": \"Choose setup mode for Conductor:\",\n      \"options\": [\n        {\n          \"label\": \"Interactive Mode\",\n          \"description\""
+        },
+        {
+          "trial_index": 3,
+          "passed": true,
+          "score": 1.0,
+          "reasoning": "All rule and schema constraints satisfied.",
+          "latency_ms": 0.0,
+          "grader_type": "RuleGrader",
+          "output_sample": "{\n  \"questions\": [\n    {\n      \"id\": \"mode_selection\",\n      \"question\": \"Choose setup mode for Conductor:\",\n      \"options\": [\n        {\n          \"label\": \"Interactive Mode\",\n          \"description\""
+        }
+      ]
+    }
+  ]
+}

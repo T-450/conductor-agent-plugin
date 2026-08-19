@@ -30,8 +30,14 @@ jobs:
         with:
           node-version: ${{ matrix.node-version }}
 
-      - name: Run Benchmark & Validation Suite
+      - name: Run Manifest & Skill Verification
         run: python evals/run_evals.py
+
+      - name: Run Eval-Driven Development (EDD) Suite
+        run: python evals/edd.py run --trials 3
+
+      - name: Run Regression Gate Check
+        run: python evals/edd.py regression --baseline evals/baselines/baseline_v1.2.0.json
 
       - name: Test CLI Bridge
         run: node bin/conductor help

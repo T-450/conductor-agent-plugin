@@ -1,0 +1,17 @@
+{
+  "id": "new_track_spec_plan",
+  "name": "Conductor New Track: Spec & Plan Generation",
+  "category": "capability",
+  "grader_type": "rule",
+  "description": "Tests that conductor-new-track produces spec.md with acceptance criteria and plan.md with checkbox hierarchy.",
+  "expected": {
+    "regex_patterns": [
+      "# Specification: .*",
+      "## Acceptance Criteria",
+      "- \\[ \\] Phase 1:",
+      "- \\[ \\] Task:"
+    ],
+    "checkbox_states": [" "]
+  },
+  "mock_output": "# Specification: User Authentication\n\n## Overview\nImplement JWT-based user authentication.\n\n## Acceptance Criteria\n1. POST /api/auth/register creates user.\n2. POST /api/auth/login returns JWT.\n\n# Implementation Plan\n- [ ] Phase 1: Authentication Core\n  - [ ] Task: Create user table and model\n  - [ ] Task: Implement JWT token generator\n  - [ ] Task: Phase 1 Verification and Checkpoint"
+}

@@ -1,19 +1,28 @@
 {
   "name": "@omp/conductor",
   "version": "1.2.0",
-  "description": "Spec-Driven Development (SDD) framework adapted for Pi, Oh-My-Pi, and GitHub Copilot CLI",
+  "description": "Spec-Driven Development (SDD) framework adapted for Pi, Oh-My-Pi, GitHub Copilot CLI, Claude Code, and Gemini CLI",
   "license": "Apache-2.0",
   "bin": {
-    "conductor": "./bin/conductor"
+    "conductor": "./bin/conductor",
+    "conductor-eval": "./evals/edd.py"
+  },
+  "scripts": {
+    "test": "python evals/run_evals.py",
+    "eval": "python evals/edd.py run",
+    "eval:regression": "python evals/edd.py regression --baseline evals/baselines/baseline_v1.2.0.json",
+    "eval:benchmark": "python evals/edd.py benchmark",
+    "eval:baseline": "python evals/edd.py baseline --save evals/baselines/baseline_v1.2.0.json"
   },
   "keywords": [
     "omp",
     "pi",
     "conductor",
+    "spec-driven-development",
+    "eval-driven-development",
+    "pass-at-k",
     "github-copilot",
     "copilot-cli",
-    "spec-driven-development",
-    "agent-skills",
     "claude-code",
     "gemini-cli"
   ],
@@ -22,6 +31,6 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/gemini-cli-extensions/conductor"
+    "url": "https://github.com/T-450/conductor-agent-plugin"
   }
 }

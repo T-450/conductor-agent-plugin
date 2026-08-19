@@ -1,0 +1,15 @@
+{
+  "id": "implement_task_lifecycle",
+  "name": "Conductor Implement: Task Lifecycle Progression",
+  "category": "capability",
+  "grader_type": "rule",
+  "description": "Tests task transition from pending [ ] to in progress [~] to completed [x] with commit SHA recording.",
+  "expected": {
+    "regex_patterns": [
+      "- \\[x\\] Task: Create user table and model \\[commit: [a-f0-9]{7}\\]",
+      "chore\\(conductor\\): Mark track '.*' as in progress"
+    ],
+    "checkbox_states": ["x"]
+  },
+  "mock_output": "Updated tracks.md: chore(conductor): Mark track 'User Authentication' as in progress\n\nPlan execution:\n- [x] Task: Create user table and model [commit: 85c37b7]\n- [x] Task: Implement JWT token generator [commit: 24c7fce]\n\nSynchronized documentation."
+}

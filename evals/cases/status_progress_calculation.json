@@ -1,0 +1,16 @@
+{
+  "id": "status_progress_calculation",
+  "name": "Conductor Status: Progress Metrics Arithmetic",
+  "category": "regression",
+  "grader_type": "rule",
+  "description": "Tests that conductor-status outputs correct task counts and percentage completion.",
+  "expected": {
+    "regex_patterns": [
+      "Tasks \\(total\\): \\d+",
+      "Completed: \\d+",
+      "Progress: \\d+%"
+    ],
+    "must_contain": ["Tasks (total)", "Progress:"]
+  },
+  "mock_output": "Project Status: In Progress\nPhases (total): 2\nTasks (total): 10\nCompleted: 8\nIn Progress: 1\nPending: 1\nProgress: 80%\nNext Action: Implement refresh token endpoint"
+}

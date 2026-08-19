@@ -1,0 +1,13 @@
+{
+  "id": "view_layer_modal_ask",
+  "name": "Conductor View Layer: Pi ask Tool Schema",
+  "category": "regression",
+  "grader_type": "rule",
+  "description": "Tests that interactive prompts adhere to Pi ask tool schema parameters.",
+  "expected": {
+    "json_schema": {
+      "required": ["questions"]
+    }
+  },
+  "mock_output": "{\n  \"questions\": [\n    {\n      \"id\": \"mode_selection\",\n      \"question\": \"Choose setup mode for Conductor:\",\n      \"options\": [\n        {\n          \"label\": \"Interactive Mode\",\n          \"description\": \"Interview questions to customize architecture\"\n        },\n        {\n          \"label\": \"Autogenerate Mode\",\n          \"description\": \"Infer architecture from codebase automatically\"\n        }\n      ],\n      \"recommended\": 0,\n      \"multi\": false\n    }\n  ]\n}"
+}

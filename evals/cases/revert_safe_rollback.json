@@ -1,0 +1,15 @@
+{
+  "id": "revert_safe_rollback",
+  "name": "Conductor Revert: Git Revert Strategy",
+  "category": "regression",
+  "grader_type": "rule",
+  "description": "Tests that conductor-revert compiles commit SHAs and executes safe revert with plan checkbox resets.",
+  "expected": {
+    "must_contain": [
+      "git revert --no-edit",
+      "chore(conductor): reset status of reverted items",
+      "[ ]"
+    ]
+  },
+  "mock_output": "Target: Revert Task 'Implement JWT token generator'\nCommits to Revert:\n  - 24c7fce ('feat(auth): implement token generator')\n\nExecuted: git revert --no-edit 24c7fce\nReset plan state to [ ]\nCommitted: chore(conductor): reset status of reverted items"
+}

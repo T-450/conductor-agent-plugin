@@ -1,0 +1,13 @@
+{
+  "id": "setup_brownfield_resumption",
+  "name": "Conductor Setup: Brownfield Resumption",
+  "category": "capability",
+  "grader_type": "rule",
+  "description": "Tests that resume.py correctly identifies missing setup artifacts and proposes next unblocked step.",
+  "expected": {
+    "json_schema": {
+      "required": ["setup_complete", "checklist", "next_step"]
+    }
+  },
+  "mock_output": "{\n  \"setup_complete\": false,\n  \"checklist\": {\n    \"product.md\": true,\n    \"product-guidelines.md\": true,\n    \"tech-stack.md\": false,\n    \"code_styleguides\": false,\n    \"workflow.md\": false\n  },\n  \"next_step\": {\n    \"step\": \"Technology Stack\",\n    \"file\": \"tech-stack.md\"\n  }\n}"
+}

@@ -1,0 +1,17 @@
+{
+  "id": "review_quality_gates",
+  "name": "Conductor Review: Quality Gates & Report",
+  "category": "capability",
+  "grader_type": "rule",
+  "description": "Tests that conductor-review outputs structured verification checks and severity-ranked findings.",
+  "expected": {
+    "regex_patterns": [
+      "## Review Report: .*",
+      "- \\[x\\] Plan Compliance: \\[Pass/Fail/Partial\\]",
+      "- \\[x\\] Style Compliance: \\[Pass/Fail\\]",
+      "- \\[x\\] Tests: \\[Pass/Fail\\]"
+    ],
+    "must_contain": ["Plan Compliance", "Style Compliance"]
+  },
+  "mock_output": "## Review Report: User Authentication\n\n### Summary\nAll implementation tasks conform to the approved specification and style guides.\n\n### Verification Checks\n- [x] Plan Compliance: [Pass/Fail/Partial]\n- [x] Style Compliance: [Pass/Fail]\n- [x] Tests: [Pass/Fail]\n\n### Findings\nNo critical or high severity issues found."
+}
