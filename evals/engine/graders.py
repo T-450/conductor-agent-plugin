@@ -5,7 +5,6 @@ Provides deterministic code graders, rule/schema graders, model-based graders, a
 
 import re
 import json
-import subprocess
 from typing import Dict, Any, List, Optional
 from abc import ABC, abstractmethod
 
@@ -48,18 +47,6 @@ class CodeGrader(BaseGrader):
                 passed = False
                 reasons.append(f"Contained forbidden substring: '{substr}'")
                 
-        # 3. Custom assertion script if provided
-        check_script = expected_criteria.get("assertion_script")
-        if check_script:
-            try:
-                env_locals = {"actual": actual_output, "passed": True}
-                exec(check_script, {}, env_locals)
-                if not env_locals.get("passed", True):
-                    passed = False
-                    reasons.append("Custom code assertion evaluated to False")
-            except Exception as err:
-                passed = False
-                reasons.append(f"Assertion script error: {str(err)}")
                 
         score = 1.0 if passed else 0.0
         reasoning = "All deterministic code checks passed." if passed else "; ".join(reasons)

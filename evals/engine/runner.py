@@ -58,24 +58,36 @@ class EvalRunner:
         
         for i in range(trials_count):
             start_time = time.time()
+            errored = False
             if executor_fn:
                 try:
                     actual_output = executor_fn(case_spec, i)
                 except Exception as err:
                     actual_output = f"ERROR: {str(err)}"
+                    errored = True
             else:
                 actual_output = case_spec.get("mock_output", "")
                 
             latency_ms = round((time.time() - start_time) * 1000, 2)
-            eval_res = grader.evaluate(actual_output, expected)
+            if errored:
+                passed = False
+                score = 0.0
+                reasoning = f"Executor error: {actual_output}"
+                grader_name = "executor"
+            else:
+                eval_res = grader.evaluate(actual_output, expected)
+                passed = eval_res["passed"]
+                score = eval_res.get("score", 1.0 if eval_res["passed"] else 0.0)
+                reasoning = eval_res.get("reasoning", "")
+                grader_name = grader.name
             
             trial = EvalTrialResult(
                 trial_index=i + 1,
-                passed=eval_res["passed"],
-                score=eval_res.get("score", 1.0 if eval_res["passed"] else 0.0),
-                reasoning=eval_res.get("reasoning", ""),
+                passed=passed,
+                score=score,
+                reasoning=reasoning,
                 latency_ms=latency_ms,
-                grader_type=grader.name,
+                grader_type=grader_name,
                 output_sample=str(actual_output)[:200] if actual_output else None
             )
             trials.append(asdict(trial))

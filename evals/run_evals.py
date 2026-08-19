@@ -6,7 +6,7 @@ Tests manifests, skill frontmatter, script execution, and SDD workflow invariant
 
 import json
 import os
-import sys
+import importlib.util
 from pathlib import Path
 
 def test_manifests(base_dir: Path):
@@ -55,7 +55,7 @@ def test_rules(base_dir: Path):
     print("[3/5] Testing rule definitions...")
     rules = [
         base_dir / "rules" / "conductor_pi.md",
-        base_dir / "rules" / "conductor_antigravity.md",
+        base_dir / "conductor_antigravity.md",
         base_dir / "rules" / "conductor_orchestrate_pi.md",
         base_dir / "rules" / "conductor_orchestrate_copilot.md",
         base_dir / "rules" / "conductor_orchestrate_agy.md",
@@ -71,8 +71,9 @@ def test_rules(base_dir: Path):
 def test_resume_script(base_dir: Path):
     print("[4/5] Testing resume.py script logic...")
     script_path = base_dir / "skills" / "conductor-setup" / "scripts"
-    sys.path.insert(0, str(script_path))
-    import resume
+    spec = importlib.util.spec_from_file_location("conductor_resume", script_path / "resume.py")
+    resume = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(resume)
     res = resume.determine_resumption()
     assert isinstance(res, dict), "resume.py did not return a dictionary"
     assert "setup_complete" in res
