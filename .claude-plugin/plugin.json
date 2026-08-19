@@ -1,0 +1,13 @@
+{
+  "name": "conductor",
+  "version": "1.2.0",
+  "description": "Conductor Spec-Driven Development (SDD) plugin adapted for Pi, Oh-My-Pi, and Claude Code.",
+  "author": {
+    "name": "Gemini CLI Extensions & Pi Contributors",
+    "url": "https://github.com/gemini-cli-extensions/conductor"
+  },
+  "homepage": "https://github.com/gemini-cli-extensions/conductor",
+  "repository": "https://github.com/gemini-cli-extensions/conductor",
+  "license": "Apache-2.0",
+  "skills": ["./skills"]
+}

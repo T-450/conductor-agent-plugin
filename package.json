@@ -1,0 +1,27 @@
+{
+  "name": "@omp/conductor",
+  "version": "1.2.0",
+  "description": "Spec-Driven Development (SDD) framework adapted for Pi, Oh-My-Pi, and GitHub Copilot CLI",
+  "license": "Apache-2.0",
+  "bin": {
+    "conductor": "./bin/conductor"
+  },
+  "keywords": [
+    "omp",
+    "pi",
+    "conductor",
+    "github-copilot",
+    "copilot-cli",
+    "spec-driven-development",
+    "agent-skills",
+    "claude-code",
+    "gemini-cli"
+  ],
+  "author": {
+    "name": "Gemini CLI Extensions & Pi Contributors"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/gemini-cli-extensions/conductor"
+  }
+}

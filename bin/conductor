@@ -1,0 +1,73 @@
+#!/usr/bin/env node
+
+/**
+ * Conductor CLI Bridge for GitHub Copilot CLI & Terminal execution.
+ */
+
+const { spawnSync } = require('child_process');
+const path = require('path');
+const fs = require('fs');
+
+const args = process.argv.slice(2);
+const command = args[0] || 'help';
+
+const HELP_TEXT = `
+Conductor CLI - Spec-Driven Development (SDD) for AI Coding Agents
+
+Usage:
+  conductor <command> [options]
+
+Commands:
+  setup       Scaffold the project and establish core context (product.md, tech-stack.md, workflow.md)
+  new-track   Plan a new track (feature/bug) with interactive spec and hierarchical plan
+  implement   Execute tasks from the active track plan sequentially
+  review      Perform code review against spec, plan, and style guides
+  status      Display high-level progress, phase/task counts, and completion percentage
+  revert      Git-aware rollback of a track, phase, or task
+  help        Show this help message
+
+Version:
+  1.2.0 (Pi / OMP / Copilot Edition)
+`;
+
+function runResumeScript() {
+  const scriptPath = path.join(__dirname, '..', 'skills', 'conductor-setup', 'scripts', 'resume.py');
+  const pythonCmd = process.platform === 'win32' ? 'python' : 'python3';
+  const res = spawnSync(pythonCmd, [scriptPath], { stdio: 'inherit' });
+  if (res.error) {
+    console.error('Error invoking resume script:', res.error.message);
+  }
+}
+
+function showStatus() {
+  const tracksPath = path.join(process.cwd(), 'conductor', 'tracks.md');
+  if (!fs.existsSync(tracksPath)) {
+    console.log('Conductor is not initialized in this directory. Run "conductor setup" to initialize.');
+    return;
+  }
+  const content = fs.readFileSync(tracksPath, 'utf8');
+  console.log('--- Conductor Tracks Registry ---');
+  console.log(content);
+}
+
+switch (command.toLowerCase()) {
+  case 'setup':
+    console.log('Starting Conductor Setup...');
+    runResumeScript();
+    break;
+  case 'status':
+    showStatus();
+    break;
+  case 'new-track':
+  case 'implement':
+  case 'review':
+  case 'revert':
+    console.log(`Command "${command}" ready. When using AI coding agents (Pi, Claude Code, GitHub Copilot), invoke the corresponding skill or prompt: /conductor-${command}`);
+    break;
+  case 'help':
+  case '--help':
+  case '-h':
+  default:
+    console.log(HELP_TEXT);
+    break;
+}

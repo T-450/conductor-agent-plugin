@@ -1,0 +1,159 @@
+# Conductor
+
+Conductor is an AI agent plugin that provides Spec-Driven Development (SDD). It helps software teams specify, plan, implement, and review code changes systematically.
+
+Conductor works with Pi / Oh-My-Pi, GitHub Copilot CLI, Claude Code, and Gemini CLI.
+
+---
+
+## What Conductor Does
+
+Conductor divides development into five sequential phases:
+
+1. **Setup**: Creates baseline documents for product goals, technology stack choices, and coding rules.
+2. **Specify and Plan**: Writes a functional specification (`spec.md`) and a step-by-step task list (`plan.md`) before implementation starts.
+3. **Implement**: Executes tasks in order, writes tests first, and records Git commit hashes.
+4. **Review**: Audits new code against the specification, plan, and style guides.
+5. **Revert**: Rolls back changes safely with Git when a task fails.
+
+All state stays in plain Markdown and JSON files inside the `conductor/` directory in your project root.
+
+---
+
+## Supported Agents
+
+- **Pi / Oh-My-Pi**: Uses the native modal `ask` tool to gather user choices, with text fallback.
+- **GitHub Copilot CLI & VS Code**: Includes repository instructions and prompt templates in `.github/`.
+- **Claude Code**: Uses standard plugin manifests in `.claude-plugin/`.
+- **Gemini CLI / Antigravity**: Uses `gemini-extension.json` and view layer adapters.
+
+---
+
+## Installation
+
+### 1. Pi / Oh-My-Pi
+
+To install globally:
+
+```bash
+# Copy to the Pi plugin cache
+cp -r conductor-pi ~/.omp/plugins/cache/plugins/conductor-marketplace___conductor___1.2.0
+```
+
+Add this block to `~/.omp/plugins/installed_plugins.json`:
+
+```json
+"conductor@conductor-marketplace": [
+  {
+    "scope": "user",
+    "installPath": "~/.omp/plugins/cache/plugins/conductor-marketplace___conductor___1.2.0",
+    "version": "1.2.0"
+  }
+]
+```
+
+To install in a single project only:
+
+```bash
+mkdir -p .omp/skills
+cp -r conductor-pi/skills/* .omp/skills/
+```
+
+### 2. GitHub Copilot CLI
+
+Conductor includes instructions for GitHub Copilot in `.github/copilot-instructions.md`.
+
+To run from your terminal:
+
+```bash
+# Run CLI directly
+./bin/conductor status
+./bin/conductor setup
+```
+
+To ask Copilot in terminal:
+
+```bash
+gh copilot suggest "Plan a new authentication feature using Conductor"
+```
+
+### 3. Claude Code
+
+```bash
+claude plugin marketplace add /path/to/conductor-pi
+claude plugin install conductor
+```
+
+### 4. Gemini CLI / Antigravity
+
+```bash
+agy plugins install https://github.com/T-450/conductor-agent-plugin
+```
+
+---
+
+## Commands and Skills
+
+| Skill | Description | Main Output Files |
+|---|---|---|
+| `conductor-setup` | Audits the project and creates baseline context | `conductor/product.md`<br>`conductor/tech-stack.md`<br>`conductor/workflow.md`<br>`conductor/index.md` |
+| `conductor-new-track` | Gathers requirements and writes a task plan | `conductor/tracks/<id>/spec.md`<br>`conductor/tracks/<id>/plan.md`<br>`conductor/tracks.md` |
+| `conductor-implement` | Executes planned tasks step by step | Updates `conductor/tracks/<id>/plan.md`<br>Updates `conductor/tracks.md` |
+| `conductor-review` | Audits completed code against standards | Review report with pass/fail findings |
+| `conductor-status` | Shows project progress and task counts | Status summary in terminal |
+| `conductor-revert` | Reverts a track, phase, or task safely | Git revert commits and plan resets |
+
+---
+
+## Directory Structure
+
+```
+conductor-pi/
+├── plugin.json                 # Manifest for Pi and general plugin loaders
+├── package.json                # npm package definition and binary entrypoint
+├── gemini-extension.json       # Gemini CLI and Antigravity manifest
+├── LICENSE                     # Apache 2.0 license
+├── README.md                   # Project documentation
+├── CONTRIBUTING.md             # Contribution guidelines
+├── SECURITY.md                 # Security policy and reporting
+├── .gitignore                  # Git ignore rules
+├── .editorconfig               # Editor formatting configuration
+├── .claude-plugin/
+│   └── plugin.json             # Claude Code manifest
+├── .github/
+│   ├── copilot-instructions.md # Instructions for GitHub Copilot
+│   ├── prompts/                # Copilot prompt templates
+│   └── workflows/
+│       ├── ci.yml              # CI test workflow
+│       └── release.yml         # Release workflow
+├── bin/
+│   └── conductor               # Node.js CLI entrypoint
+├── rules/
+│   ├── conductor_pi.md          # Pi interaction rules
+│   └── conductor_antigravity.md # Antigravity interaction rules
+├── skills/
+│   ├── conductor-setup/        # Project setup skill and style guides
+│   ├── conductor-new-track/    # Track planning skill
+│   ├── conductor-implement/    # Task execution skill
+│   ├── conductor-review/       # Code review skill
+│   ├── conductor-status/       # Progress report skill
+│   └── conductor-revert/       # Git revert skill
+└── evals/
+    └── run_evals.py            # Automated test suite
+```
+
+---
+
+## Testing
+
+Run the automated test suite with Python 3:
+
+```bash
+python evals/run_evals.py
+```
+
+---
+
+## License
+
+Apache License 2.0. See [LICENSE](LICENSE) for details.
