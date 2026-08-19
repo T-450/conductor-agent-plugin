@@ -2,7 +2,7 @@
 name: conductor-orchestrate
 description: Orchestrates subagent-driven development for a conductor track. Delegates planning research, per-phase TDD implementation, and per-phase code review to specialized subagents with mandatory pause points. Use this to run a track through the Planning, Implementation, Review, Commit cycle with parallel subagent execution.
 metadata:
-  version: "1.0"
+  version: "1.2.0"
 ---
 
 # Conductor Orchestrate Skill

@@ -2,7 +2,7 @@
 name: conductor-new-track
 description: Plans a new track (feature or bug fix), generates spec/plan documents, and updates the registry.
 metadata:
-  version: "1.1"
+  version: "1.2.0"
 ---
 
 # Conductor New Track Skill
@@ -127,7 +127,7 @@ Adhere to this sequence precisely.
 
         ```bash
         mkdir -p .agents/skills/<skill_name>
-        curl -sSL <URL>SKILL.md -o .omp/skills/<skill_name>/SKILL.md (or .agents/skills/<skill_name>/SKILL.md)
+        curl -sSL <URL>SKILL.md -o .agents/skills/<skill_name>/SKILL.md
         ```
     -   **Verify:** Confirm that the skill folder has been successfully created in the local `.agents/skills/` directory.
     -   **If no missing skills found:** Skip this section.
@@ -158,13 +158,21 @@ Adhere to this sequence precisely.
 5.  **Update Tracks Registry:**
     -   Open the **Tracks Registry** file (resolved via `conductor/index.md`).
     -   Append the new track entry at the end of the file. Create the file if this is the first track.
-    -   Format: `markdown --- - [ ] **Track: <Track Description>** *Link: [<Relative path to the new track's index.md>](<Relative path to the new track's index.md>)*`
+    -   Format:
+        ```markdown
+        - [ ] **Track: <Track Description>** *Link: [<Relative path to the new track's index.md>](<Relative path to the new track's index.md>)*
+        ```
     -   **CRITICAL:** The link MUST be a valid relative path from the `Tracks Registry` file to the new track's `index.md` file.
 
 6.  **Register Tracks in Handshake:**
     -   You MUST ensure that the project's primary source of truth (`conductor/index.md`) points to the tracks infrastructure.
     -   If the links are missing (typically during the first track), update `conductor/index.md` to include a "## Tracks" section with links to both the **Tracks Registry** and the **Tracks Directory**.
-    -   **Example Addition:** `markdown ## Tracks - [Tracks Registry](./tracks.md) - [Tracks Directory](./tracks/)`
+    -   **Example Addition:**
+        ```markdown
+        ## Tracks
+        - [Tracks Registry](./tracks.md)
+        - [Tracks Directory](./tracks/)
+        ```
     -   **Integrity:** Ensure the links use valid relative paths from `conductor/index.md`.
 
 7.  **Finalize Changes:**

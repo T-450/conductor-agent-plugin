@@ -2,7 +2,7 @@
 name: conductor-revert
 description: Reverts previous work (tracks, phases, or tasks) by identifying associated commits and performing Git reverts.
 metadata:
-  version: "1.0"
+  version: "1.2.0"
 ---
 
 # Conductor Revert Skill
@@ -50,7 +50,7 @@ Before starting the revert process, you MUST locate and read the project's found
     *   **PATH A: Direct Confirmation**
         1.  Find the specific track, phase, or task the user referenced in the **Tracks Registry** or **Implementation Plan** files. Resolve these files by checking `conductor/index.md` or track-level index files for links, otherwise use the **Default Paths** (e.g., `conductor/tracks.md`, `conductor/tracks/<track_id>/plan.md`).
         2.  Ask the user for confirmation using a **Yes/No question** to verify the selected target.
-        3.  If "yes", establish this as the `target_intent` and proceed to Phase 2. If "no", ask an **open question** for them to describe the Track, Phase, or Task they would like to revert.
+        3.  If "yes", establish this as the `target_intent` and proceed to Section 3. If "no", ask an **open question** for them to describe the Track, Phase, or Task they would like to revert.
 
     *   **PATH B: Guided Selection Menu**
         1.  **Identify Revert Candidates:** Your primary goal is to find relevant items for the user to revert.
@@ -59,7 +59,7 @@ Before starting the revert process, you MUST locate and read the project's found
             *   **Fallback to Completed:** If and only if NO in-progress items are found, find the **3 most recently completed** Tasks and Phases (`[x]`).
         2.  **Present a Unified Hierarchical Menu:** Present the identified items to the user as a **single-choice question** (limiting to a maximum of 4 items) to let them choose what to revert.
         3.  **Process User's Choice:**
-            *   If the user selects a specific item from the list, set this as the `target_intent` and proceed directly to Phase 2.
+            *   If the user selects a specific item from the list, set this as the `target_intent` and proceed directly to Section 3.
             *   If the user selects "Other", ask an **open question** to find the correct target, and then confirm it using Path A.
                 * Once a target is identified, loop back to Path A for final confirmation.
 
@@ -97,7 +97,7 @@ Before starting the revert process, you MUST locate and read the project's found
     > *   **Target:** Revert Task '[Task Description]'.
     > *   **Commits to Revert:** 2
     > `  - <sha_code_commit> ('feat: Add user profile')`
-    > `  - <sha_plan_commit> ('conductor(plan): Mark task complete')`
+    > `  - <sha_plan_commit> ('chore(conductor): Mark task complete')`
 
 2.  **Choose Strategy:** Ask the user to choose the revert strategy using a **single-choice question** with options:
     - **Safe (Recommended)**: Use `git revert` to create new commits that undo the changes. This preserves history and is safe for shared branches.

@@ -37,7 +37,7 @@ To install globally:
 
 ```bash
 # Copy to the Pi plugin cache
-cp -r conductor-pi ~/.omp/plugins/cache/plugins/conductor-marketplace___conductor___1.2.0
+cp -r conductor-agent-plugin ~/.omp/plugins/cache/plugins/conductor-marketplace___conductor___1.2.0
 ```
 
 Add this block to `~/.omp/plugins/installed_plugins.json`:
@@ -56,7 +56,7 @@ To install in a single project only:
 
 ```bash
 mkdir -p .omp/skills
-cp -r conductor-pi/skills/* .omp/skills/
+cp -r conductor-agent-plugin/skills/* .omp/skills/
 ```
 
 ### 2. GitHub Copilot CLI
@@ -80,7 +80,7 @@ gh copilot suggest "Plan a new authentication feature using Conductor"
 ### 3. Claude Code
 
 ```bash
-claude plugin marketplace add /path/to/conductor-pi
+claude plugin marketplace add /path/to/conductor-agent-plugin
 claude plugin install conductor
 ```
 
@@ -109,7 +109,7 @@ agy plugins install https://github.com/T-450/conductor-agent-plugin
 ## Directory Structure
 
 ```
-conductor-pi/
+conductor-agent-plugin/
 ├── plugin.json                 # Manifest for Pi and general plugin loaders
 ├── package.json                # npm package definition and binary entrypoint
 ├── gemini-extension.json       # Gemini CLI and Antigravity manifest

@@ -6,8 +6,8 @@
     "name": "Gemini CLI Extensions & Pi Contributors",
     "url": "https://github.com/gemini-cli-extensions/conductor"
   },
-  "homepage": "https://github.com/gemini-cli-extensions/conductor",
-  "repository": "https://github.com/gemini-cli-extensions/conductor",
+  "homepage": "https://github.com/T-450/conductor-agent-plugin",
+  "repository": "https://github.com/T-450/conductor-agent-plugin",
   "license": "Apache-2.0",
   "skills": ["./skills"]
 }

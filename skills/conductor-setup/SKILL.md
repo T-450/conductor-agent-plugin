@@ -2,7 +2,7 @@
 name: conductor-setup
 description: Scaffolds the project and sets up the Conductor environment. Use this whenever a project needs to be initialized or if the Conductor configuration is missing.
 metadata:
-  version: "1.1"
+  version: "1.2.0"
 ---
 
 # Conductor Setup Skill
@@ -16,8 +16,8 @@ You are the **Conductor Architect**. Your goal is to initialize a project for Sp
 -   **Path Integrity:** Always use relative paths starting from the project root (e.g., `conductor/product.md`).
 -   **State Machine:** You act as a gatekeeper. Do not proceed to configuration until discovery is approved by the user.
 -   **Strategic Transparency:** Before executing a tool call that creates or modifies crucial infrastructure (like `workflow.md`), you MUST explain its strategic value to the project. Don't just execute; act as a mentor guiding the user through the 'Why' behind the scaffolding.
--   **Interaction Protocol:** When gathering information or asking for decisions, you MUST provide either **single-choice** or **multiple-choice** options based on context-aware suggestions. If a specific option is preferred based on project standards or best practices, list it first, suffix it with '(Recommended: *<explanation>*)' providing a brief, context-rich explanation in italics inside the parentheses. You MUST always include a custom or "Other" option to allow user-defined input. Avoid asking raw, open-ended questions without suggestions. Example:
-    -   Description of choice 1 (Recommended: *<Brief explanation of why it is the better choice>*)
+-   **Interaction Protocol:** When gathering information or asking for decisions, you MUST provide either **single-choice** or **multiple-choice** options based on context-aware suggestions. If a specific option is preferred based on project standards or best practices, list it first, prefix it with '(Recommended)', and provide a brief, context-rich explanation of why it is the better choice. You MUST always include a custom or "Other" option to allow user-defined input. Avoid asking raw, open-ended questions without suggestions. Example:
+    -   Description of choice 1 (Recommended): *<Brief explanation of why it is the better choice>*
     -   Description of choice 2
     -   Other (User-defined input)
 -   **Mode Selection Protocol:** For Sections 2.1 through 2.4, give the user the choice between **Interactive Mode** and **Autogenerate Mode**.
@@ -47,7 +47,7 @@ Example (for a new project):
 
 ### 1.2 Audit Artifacts & Resumption Check
 
-Run the automated directory resumption script: `python3 scripts/resume.py`
+Run the automated directory resumption script: `python3 scripts/resume.py` (on Windows: `python scripts/resume.py`)
 
 Read the returned JSON object from `stdout`. **Do NOT mention the script name or path to the user.**
 
@@ -183,7 +183,7 @@ Configure the operational rules for the project.
       
         ```bash
         mkdir -p .agents/skills/<skill_name>
-        curl -sSL <URL>SKILL.md -o .omp/skills/<skill_name>/SKILL.md (or .agents/skills/<skill_name>/SKILL.md)
+        curl -sSL <URL>SKILL.md -o .agents/skills/<skill_name>/SKILL.md
         ```
     - **Verify:** Confirm that the skill folder has been successfully created in the local `.agents/skills/` directory.
     - **If no missing skills found:** Skip this section.
@@ -223,7 +223,7 @@ Create `conductor/index.md`. This is the **Single Source of Truth** for all tool
 
 3.  **Integrity Check:** You MUST verify the existence of all linked files on disk.
 
-4.  **Commit Stage:** Stage the entire `conductor/` directory. Create a commit with the message: `conductor(setup): Initialize project context and standards`.
+4.  **Commit Stage:** Stage the entire `conductor/` directory. Create a commit with the message: `chore(conductor): Initialize project context and standards`.
 
 ## 4. Completion
 

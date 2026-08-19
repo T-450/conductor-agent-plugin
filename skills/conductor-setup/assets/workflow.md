@@ -81,14 +81,14 @@ All tasks follow a strict lifecycle:
 
     -   **Step 10.1: Update Plan:** Read `plan.md`, find the line for the
         completed task, update its status from `[~]` to `[x]`, and append the
-        first 7 characters of the *just-completed commit's* commit hash.
+        first 7 characters of the *just-completed commit's* hash in the format `[commit: <sha>]`.
     -   **Step 10.2: Write Plan:** Write the updated content back to `plan.md`.
 
 11. **Commit Plan Update:**
 
     -   **Action:** Stage the modified `plan.md` file.
     -   **Action:** Commit this change with a descriptive message (e.g.,
-        `conductor(plan): Mark task 'Create user model' as complete`).
+        `chore(conductor): Mark task 'Create user model' as complete`).
 
 ### Task Correction & Plan Amendment Workflows
 
@@ -210,7 +210,7 @@ that also concludes a phase in `plan.md`.
 
     -   **Action:** Stage the modified `plan.md` file.
     -   **Action:** Commit this change with a descriptive message following the
-        format `conductor(plan): Mark phase '<PHASE NAME>' as complete`.
+        format `chore(conductor): Mark phase '<PHASE NAME>' as complete`.
 
 10. **Announce Completion:** Inform the user that the phase is complete and the
     checkpoint has been created, with the detailed verification report attached

@@ -2,7 +2,7 @@
 name: conductor-review
 description: Reviews the completed track work against guidelines and the plan. Acts as a Principal Software Engineer to ensure quality and compliance.
 metadata:
-  version: "1.0"
+  version: "1.2.0"
 ---
 
 # Conductor Review Skill
@@ -181,10 +181,10 @@ Before starting the review process, you MUST locate and read the project's found
                    - Commit with message: `fix(conductor): Apply review suggestions for track '<track_name>'`.
                  - **Record SHA:**
                    - Get the short SHA (first 7 characters) of the commit.
-                   - Update the task in `plan.md` to: `- [x] Task: Apply review suggestions <sha>`.
+                   - Update the task in `plan.md` to: `- [x] Task: Apply review suggestions [commit: <sha>]`.
                  - **Commit Plan Update:**
                    - Stage `plan.md`.
-                   - Commit with message: `conductor(plan): Mark task 'Apply review suggestions' as complete`.
+                   - Commit with message: `chore(conductor): Mark task 'Apply review suggestions' as complete`.
                  - **Announce Success:** "Review changes committed and tracked in the plan."
             iii. **If No:** Skip the commit and plan update. Proceed to '3.3 Track Cleanup'.
 

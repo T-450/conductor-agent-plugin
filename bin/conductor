@@ -18,12 +18,13 @@ Usage:
   conductor <command> [options]
 
 Commands:
-  setup       Scaffold the project and establish core context (product.md, tech-stack.md, workflow.md)
+  setup       Check Conductor setup state (full setup runs in an AI agent session)
   new-track   Plan a new track (feature/bug) with interactive spec and hierarchical plan
   implement   Execute tasks from the active track plan sequentially
   review      Perform code review against spec, plan, and style guides
   status      Display high-level progress, phase/task counts, and completion percentage
   revert      Git-aware rollback of a track, phase, or task
+  orchestrate  Orchestrate a track with planning, implementation, and review subagents
   help        Show this help message
 
 Version:
@@ -52,7 +53,8 @@ function showStatus() {
 
 switch (command.toLowerCase()) {
   case 'setup':
-    console.log('Starting Conductor Setup...');
+    console.log('Full Conductor setup is driven by the conductor-setup skill in an AI agent session.');
+    console.log('Running the resumption check to show the current setup state:');
     runResumeScript();
     break;
   case 'status':
@@ -62,6 +64,7 @@ switch (command.toLowerCase()) {
   case 'implement':
   case 'review':
   case 'revert':
+  case 'orchestrate':
     console.log(`Command "${command}" ready. When using AI coding agents (Pi, Claude Code, GitHub Copilot), invoke the corresponding skill or prompt: /conductor-${command}`);
     break;
   case 'help':
