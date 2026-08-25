@@ -29,6 +29,14 @@ All state stays in plain Markdown and JSON files inside the `conductor/` directo
 
 ---
 
+## Design Decisions & Trade-offs
+
+- **Spec-driven over free-form prompting.** Free-form prompting optimizes for how fast the first line of code appears; Conductor optimizes for the correctness of the final diff. Writing `spec.md` and `plan.md` before implementation costs minutes up front but gives the implementing agent an unambiguous target and gives `conductor-review` an objective baseline to audit against. The trade-off is ceremony: trivial tracks pay a fixed overhead, so every phase is deliberately skippable.
+- **Plain Markdown/JSON state instead of a database.** All state lives in `conductor/` as diffable text files, chosen over SQLite or a daemon: it reviews naturally in PRs, is hand-editable when an agent gets stuck, works identically across all four supported agents with zero runtime dependencies. The cost is no locking — Conductor assumes a single operator per track rather than solving concurrent writes.
+- **Review and revert as first-class phases.** Implementation isn't done when the code compiles: `conductor-review` audits the change against spec, plan, and style guides, and `conductor-revert` uses Git to roll back failed tasks cleanly. Making failure cheap and visible matters more than making agents look infallible.
+
+---
+
 ## Installation
 
 ### 1. Pi / Oh-My-Pi
