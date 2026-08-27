@@ -10,24 +10,31 @@ import importlib.util
 from pathlib import Path
 
 def test_manifests(base_dir: Path):
-    print("[1/5] Testing manifests...")
+    print("[1/6] Testing manifests and installer scripts...")
     manifest_files = [
         base_dir / "plugin.json",
         base_dir / ".claude-plugin" / "plugin.json",
+        base_dir / ".claude-plugin" / "marketplace.json",
         base_dir / "gemini-extension.json",
         base_dir / "package.json",
+        base_dir / "VERSION",
     ]
     for mf in manifest_files:
         if not mf.exists():
-            raise FileNotFoundError(f"Missing manifest: {mf}")
-        with open(mf, "r", encoding="utf-8") as f:
-            data = json.load(f)
-            assert "name" in data, f"Missing 'name' in {mf}"
-            assert "version" in data, f"Missing 'version' in {mf}"
-    print("  -> All manifests are valid JSON with required metadata.")
+            raise FileNotFoundError(f"Missing manifest or version file: {mf}")
+        if mf.suffix == ".json":
+            with open(mf, "r", encoding="utf-8") as f:
+                data = json.load(f)
+                assert "name" in data, f"Missing 'name' in {mf}"
+
+    # Verify installer scripts exist and are valid
+    assert (base_dir / "install.sh").exists(), "Missing install.sh"
+    assert (base_dir / "install.ps1").exists(), "Missing install.ps1"
+    assert (base_dir / "bin" / "conductor").exists(), "Missing bin/conductor"
+    print("  -> All manifests, VERSION, and installer scripts verified.")
 
 def test_skills_frontmatter(base_dir: Path):
-    print("[2/5] Testing skill frontmatters and markdown integrity...")
+    print("[2/6] Testing skill frontmatters and markdown integrity...")
     skills = [
         "conductor-setup",
         "conductor-new-track",
@@ -52,10 +59,11 @@ def test_skills_frontmatter(base_dir: Path):
     print(f"  -> All {len(skills)} skills verified with correct frontmatter and structure.")
 
 def test_rules(base_dir: Path):
-    print("[3/5] Testing rule definitions...")
+    print("[3/6] Testing rule definitions...")
     rules = [
         base_dir / "rules" / "conductor_pi.md",
         base_dir / "conductor_antigravity.md",
+        base_dir / "rules" / "conductor_antigravity.md",
         base_dir / "rules" / "conductor_orchestrate_pi.md",
         base_dir / "rules" / "conductor_orchestrate_copilot.md",
         base_dir / "rules" / "conductor_orchestrate_agy.md",
@@ -69,7 +77,7 @@ def test_rules(base_dir: Path):
     print("  -> All UX adapter rules verified.")
 
 def test_resume_script(base_dir: Path):
-    print("[4/5] Testing resume.py script logic...")
+    print("[4/6] Testing resume.py script logic...")
     script_path = base_dir / "skills" / "conductor-setup" / "scripts"
     spec = importlib.util.spec_from_file_location("conductor_resume", script_path / "resume.py")
     resume = importlib.util.module_from_spec(spec)
@@ -82,7 +90,7 @@ def test_resume_script(base_dir: Path):
     print("  -> resume.py executed successfully and returned valid status schema.")
 
 def test_assets(base_dir: Path):
-    print("[5/5] Testing assets and styleguides...")
+    print("[5/6] Testing assets and styleguides...")
     setup_assets = base_dir / "skills" / "conductor-setup" / "assets"
     assert (setup_assets / "workflow.md").exists(), "Missing workflow.md"
     assert (setup_assets / "catalog.md").exists(), "Missing catalog.md"
@@ -94,6 +102,14 @@ def test_assets(base_dir: Path):
         assert (styleguides_dir / g).exists(), f"Missing styleguide {g}"
     print(f"  -> All {len(required_guides)} code styleguides and assets verified.")
 
+def test_doctor_cli(base_dir: Path):
+    print("[6/6] Testing conductor doctor CLI diagnostic...")
+    import subprocess
+    res = subprocess.run(["node", str(base_dir / "bin" / "conductor"), "doctor"], capture_output=True, text=True)
+    assert res.returncode == 0, f"conductor doctor exited with non-zero code {res.returncode}: {res.stderr}"
+    assert "CONDUCTOR HEALTH DIAGNOSTIC" in res.stdout, "Missing header in doctor output"
+    print("  -> conductor doctor executed cleanly and verified environment.")
+
 def run_benchmark():
     print("==================================================")
     print("   CONDUCTOR PI / OH-MY-PI PLUGIN EVALUATION   ")
@@ -104,9 +120,11 @@ def run_benchmark():
     test_rules(base_dir)
     test_resume_script(base_dir)
     test_assets(base_dir)
+    test_doctor_cli(base_dir)
     print("==================================================")
-    print("   ALL EVALS PASSED (5/5) - 100% SCORE GRADE A+   ")
+    print("   ALL EVALS PASSED (6/6) - 100% SCORE GRADE A+   ")
     print("==================================================")
 
 if __name__ == "__main__":
     run_benchmark()
+

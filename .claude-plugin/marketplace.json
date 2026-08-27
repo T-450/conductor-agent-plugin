@@ -1,0 +1,13 @@
+{
+  "name": "conductor",
+  "owner": {
+    "name": "Gemini CLI Extensions & Pi Contributors"
+  },
+  "plugins": [
+    {
+      "name": "conductor",
+      "source": "./",
+      "description": "Conductor Spec-Driven Development (SDD) plugin adapted for Pi, Oh-My-Pi, Claude Code, and Gemini CLI agents."
+    }
+  ]
+}

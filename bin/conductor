@@ -1,12 +1,26 @@
 #!/usr/bin/env node
 
 /**
- * Conductor CLI Bridge for GitHub Copilot CLI & Terminal execution.
+ * Conductor CLI - Spec-Driven Development (SDD) for AI Coding Agents
+ * Cross-platform harness bridge, doctor diagnostic, updater, and scaffolder.
  */
 
 const { spawnSync } = require('child_process');
 const path = require('path');
 const fs = require('fs');
+const os = require('os');
+
+const PKG_ROOT = path.resolve(__dirname, '..');
+const VERSION = getPackageVersion();
+
+function getPackageVersion() {
+  try {
+    const pkg = JSON.parse(fs.readFileSync(path.join(PKG_ROOT, 'package.json'), 'utf8'));
+    return pkg.version || '1.2.0';
+  } catch {
+    return '1.2.0';
+  }
+}
 
 const args = process.argv.slice(2);
 const command = args[0] || 'help';
@@ -17,23 +31,39 @@ Conductor CLI - Spec-Driven Development (SDD) for AI Coding Agents
 Usage:
   conductor <command> [options]
 
-Commands:
+Core Commands:
+  doctor      Diagnose installation health, manifests, and harness discovery
   setup       Check Conductor setup state (full setup runs in an AI agent session)
+  status      Display high-level progress, phase/task counts, and completion percentage
+  install     Scaffold Conductor into current project (--local) or globally (--global)
+  update      Update Conductor repository and refresh harness registrations
+  uninstall   Remove Conductor symlinks and harness registrations
+  version     Display current Conductor version
+  help        Show this help message
+
+Agent SDD Commands:
   new-track   Plan a new track (feature/bug) with interactive spec and hierarchical plan
   implement   Execute tasks from the active track plan sequentially
   review      Perform code review against spec, plan, and style guides
-  status      Display high-level progress, phase/task counts, and completion percentage
   revert      Git-aware rollback of a track, phase, or task
-  orchestrate  Orchestrate a track with planning, implementation, and review subagents
-  help        Show this help message
+  orchestrate Orchestrate a track with planning, implement, and review subagents
 
 Version:
-  1.2.0 (Pi / OMP / Copilot Edition)
+  ${VERSION} (Universal Multi-Harness Edition)
 `;
 
+function getPythonCommand() {
+  if (process.platform === 'win32') {
+    const res = spawnSync('where', ['python'], { encoding: 'utf8' });
+    if (res.status === 0) return 'python';
+    return 'python3';
+  }
+  return 'python3';
+}
+
 function runResumeScript() {
-  const scriptPath = path.join(__dirname, '..', 'skills', 'conductor-setup', 'scripts', 'resume.py');
-  const pythonCmd = process.platform === 'win32' ? 'python' : 'python3';
+  const scriptPath = path.join(PKG_ROOT, 'skills', 'conductor-setup', 'scripts', 'resume.py');
+  const pythonCmd = getPythonCommand();
   const res = spawnSync(pythonCmd, [scriptPath], { stdio: 'inherit' });
   if (res.error) {
     console.error('Error invoking resume script:', res.error.message);
@@ -51,7 +81,315 @@ function showStatus() {
   console.log(content);
 }
 
+function runDoctor() {
+  console.log('\n======================================================');
+  console.log(`       CONDUCTOR HEALTH DIAGNOSTIC (v${VERSION})       `);
+  console.log('======================================================\n');
+
+  let passes = 0;
+  let warnings = 0;
+  let failures = 0;
+
+  function report(category, name, ok, details = '') {
+    if (ok === true) {
+      passes++;
+      console.log(` [\x1b[32mPASS\x1b[0m] ${category}: ${name}`);
+    } else if (ok === 'warn') {
+      warnings++;
+      console.log(` [\x1b[33mWARN\x1b[0m] ${category}: ${name} ${details ? `(${details})` : ''}`);
+    } else {
+      failures++;
+      console.log(` [\x1b[31mFAIL\x1b[0m] ${category}: ${name} ${details ? `(${details})` : ''}`);
+    }
+  }
+
+  // 1. Runtime Environment
+  const nodeVer = process.version;
+  report('Runtime', `Node.js runtime active (${nodeVer})`, true);
+
+  const pyCmd = getPythonCommand();
+  const pyRes = spawnSync(pyCmd, ['--version'], { encoding: 'utf8' });
+  if (pyRes.status === 0) {
+    const pyVer = (pyRes.stdout || pyRes.stderr || '').trim();
+    report('Runtime', `Python runtime available (${pyVer})`, true);
+  } else {
+    report('Runtime', 'Python runtime', false, 'python3 is required for resume.py script');
+  }
+
+  const gitRes = spawnSync('git', ['--version'], { encoding: 'utf8' });
+  if (gitRes.status === 0) {
+    report('Runtime', `Git runtime available (${gitRes.stdout.trim()})`, true);
+  } else {
+    report('Runtime', 'Git runtime', 'warn', 'Git CLI recommended for track version control');
+  }
+
+  // 2. Plugin Manifests
+  const manifests = [
+    'package.json',
+    'plugin.json',
+    'gemini-extension.json',
+    '.claude-plugin/plugin.json',
+    '.claude-plugin/marketplace.json',
+    'VERSION'
+  ];
+
+  manifests.forEach(m => {
+    const p = path.join(PKG_ROOT, m);
+    if (fs.existsSync(p)) {
+      if (m.endsWith('.json')) {
+        try {
+          JSON.parse(fs.readFileSync(p, 'utf8'));
+          report('Manifest', m, true);
+        } catch (e) {
+          report('Manifest', m, false, 'Invalid JSON syntax');
+        }
+      } else {
+        report('Manifest', m, true);
+      }
+    } else {
+      report('Manifest', m, false, 'File missing');
+    }
+  });
+
+  // 3. Core SDD Skills & Orchestration
+  const expectedSkills = [
+    'conductor-setup',
+    'conductor-new-track',
+    'conductor-implement',
+    'conductor-review',
+    'conductor-status',
+    'conductor-revert',
+    'conductor-orchestrate'
+  ];
+
+  expectedSkills.forEach(s => {
+    const skillPath = path.join(PKG_ROOT, 'skills', s, 'SKILL.md');
+    if (fs.existsSync(skillPath)) {
+      const content = fs.readFileSync(skillPath, 'utf8');
+      if (content.startsWith('---') && content.includes(`name: ${s}`)) {
+        report('Skill', `${s} verified`, true);
+      } else {
+        report('Skill', `${s}`, 'warn', 'Missing YAML frontmatter standard');
+      }
+    } else {
+      report('Skill', `${s}`, false, 'SKILL.md not found');
+    }
+  });
+
+  // 4. UX Adapter Rules
+  const expectedRules = [
+    'conductor_pi.md',
+    'conductor_antigravity.md',
+    'conductor_orchestrate_pi.md',
+    'conductor_orchestrate_copilot.md',
+    'conductor_orchestrate_agy.md'
+  ];
+
+  expectedRules.forEach(r => {
+    const rulePath = path.join(PKG_ROOT, 'rules', r);
+    if (fs.existsSync(rulePath)) {
+      report('Rule', `${r} verified`, true);
+    } else {
+      report('Rule', `${r}`, false, 'Rule file missing in rules/');
+    }
+  });
+
+  // 5. Resumption Logic Execution Test
+  const resumeScript = path.join(PKG_ROOT, 'skills', 'conductor-setup', 'scripts', 'resume.py');
+  const runTest = spawnSync(pyCmd, [resumeScript], { encoding: 'utf8' });
+  if (runTest.status === 0) {
+    try {
+      const data = JSON.parse(runTest.stdout);
+      if (typeof data.setup_complete === 'boolean' && data.checklist) {
+        report('Automation', 'resume.py resumption check functional', true);
+      } else {
+        report('Automation', 'resume.py', false, 'Invalid resumption schema payload');
+      }
+    } catch {
+      report('Automation', 'resume.py', false, 'Failed to parse JSON output');
+    }
+  } else {
+    report('Automation', 'resume.py', false, runTest.stderr || 'Execution failed');
+  }
+
+  // 6. Harness Global Configuration Detection
+  const home = os.homedir();
+  console.log('\n--- Active Harness Discovery Status ---');
+
+  // Pi / Oh-My-Pi
+  const piInstalledPath = path.join(home, '.omp', 'plugins', 'installed_plugins.json');
+  const piSkillDir = path.join(home, '.omp', 'agent', 'skills');
+  let piDetected = false;
+  if (fs.existsSync(piInstalledPath)) {
+    try {
+      const data = JSON.parse(fs.readFileSync(piInstalledPath, 'utf8'));
+      if (Object.keys(data).some(k => k.toLowerCase().includes('conductor'))) {
+        piDetected = true;
+      }
+    } catch {}
+  }
+  if (piDetected || fs.existsSync(piSkillDir)) {
+    report('Harness', 'Pi / Oh-My-Pi configured globally', true);
+  } else {
+    report('Harness', 'Pi / Oh-My-Pi global configuration', 'warn', 'Not registered in ~/.omp/plugins/installed_plugins.json');
+  }
+
+  // Claude Code
+  const claudeMarketplace = path.join(home, '.claude', 'plugins');
+  if (fs.existsSync(claudeMarketplace)) {
+    report('Harness', 'Claude Code plugins directory detected', true);
+  } else {
+    report('Harness', 'Claude Code', 'warn', 'Run: claude plugin marketplace add ' + PKG_ROOT);
+  }
+
+  // Antigravity / Gemini CLI
+  const agyPlugins = path.join(home, '.gemini', 'config', 'plugins', 'conductor');
+  if (fs.existsSync(agyPlugins)) {
+    report('Harness', 'Gemini CLI / Antigravity plugin symlink active', true);
+  } else {
+    report('Harness', 'Gemini CLI / Antigravity', 'warn', 'Link with: ln -s ' + PKG_ROOT + ' ~/.gemini/config/plugins/conductor');
+  }
+
+  // GitHub Copilot CLI
+  const copilotPromptDir = path.join(process.cwd(), '.github', 'prompts');
+  if (fs.existsSync(copilotPromptDir)) {
+    report('Harness', 'GitHub Copilot instructions active in current workspace', true);
+  } else {
+    report('Harness', 'GitHub Copilot', 'warn', 'Workspace .github/ not detected (run "conductor install --local" to scaffold)');
+  }
+
+  console.log('\n======================================================');
+  console.log(`Results: ${passes} Passed, ${warnings} Warnings, ${failures} Failures`);
+  console.log('======================================================\n');
+
+  if (failures > 0) {
+    process.exit(1);
+  }
+}
+
+function runUpdate() {
+  console.log('Checking for updates...');
+  const gitCheck = spawnSync('git', ['rev-parse', '--is-inside-work-tree'], { cwd: PKG_ROOT, encoding: 'utf8' });
+  if (gitCheck.status !== 0) {
+    console.error('Update failed: Conductor root is not a git repository.');
+    process.exit(1);
+  }
+
+  const pull = spawnSync('git', ['pull', '--ff-only'], { cwd: PKG_ROOT, stdio: 'inherit' });
+  if (pull.status === 0) {
+    console.log('\x1b[32mSuccessfully updated Conductor!\x1b[0m');
+    console.log('Running health diagnostic...');
+    runDoctor();
+  } else {
+    console.error('Update failed: Could not pull latest changes.');
+    process.exit(1);
+  }
+}
+
+function runLocalScaffold() {
+  const cwd = process.cwd();
+  console.log(`Scaffolding Conductor SDD into workspace: ${cwd}`);
+
+  // 1. Copy .github configs for Copilot
+  const githubSrc = path.join(PKG_ROOT, '.github');
+  const githubDest = path.join(cwd, '.github');
+  copyDirRecursive(githubSrc, githubDest);
+
+  // 2. Copy skills into .omp/skills and .agents/skills
+  const skillsSrc = path.join(PKG_ROOT, 'skills');
+  copyDirRecursive(skillsSrc, path.join(cwd, '.omp', 'skills'));
+  copyDirRecursive(skillsSrc, path.join(cwd, '.agents', 'skills'));
+
+  // 3. Copy rules into rules/
+  const rulesSrc = path.join(PKG_ROOT, 'rules');
+  copyDirRecursive(rulesSrc, path.join(cwd, 'rules'));
+
+  console.log('\x1b[32mSuccessfully scaffolded Conductor into workspace!\x1b[0m');
+  console.log('Configured: .github/ (Copilot), .omp/skills/ (Pi), .agents/skills/ (AGY/Claude)');
+}
+
+function copyDirRecursive(src, dest) {
+  if (!fs.existsSync(src)) return;
+  if (!fs.existsSync(dest)) fs.mkdirSync(dest, { recursive: true });
+
+  const entries = fs.readdirSync(src, { withFileTypes: true });
+  for (const entry of entries) {
+    if (entry.name === '.git' || entry.name === 'node_modules') continue;
+    const srcPath = path.join(src, entry.name);
+    const destPath = path.join(dest, entry.name);
+    if (entry.isDirectory()) {
+      copyDirRecursive(srcPath, destPath);
+    } else {
+      fs.copyFileSync(srcPath, destPath);
+    }
+  }
+}
+
+function runUninstall() {
+  const home = os.homedir();
+  console.log('Uninstalling Conductor links and registrations...');
+
+  // Remove ~/.local/bin/conductor
+  const binPath = path.join(home, '.local', 'bin', 'conductor');
+  if (fs.existsSync(binPath)) {
+    try {
+      fs.unlinkSync(binPath);
+      console.log(`Removed ${binPath}`);
+    } catch (e) {
+      console.error(`Failed to remove ${binPath}: ${e.message}`);
+    }
+  }
+
+  // Remove Antigravity link
+  const agyLink = path.join(home, '.gemini', 'config', 'plugins', 'conductor');
+  if (fs.existsSync(agyLink)) {
+    try {
+      fs.unlinkSync(agyLink);
+      console.log(`Removed ${agyLink}`);
+    } catch (e) {
+      console.error(`Failed to remove ${agyLink}: ${e.message}`);
+    }
+  }
+
+  // Unregister Pi
+  const piInstalledPath = path.join(home, '.omp', 'plugins', 'installed_plugins.json');
+  if (fs.existsSync(piInstalledPath)) {
+    try {
+      const data = JSON.parse(fs.readFileSync(piInstalledPath, 'utf8'));
+      let modified = false;
+      for (const k of Object.keys(data)) {
+        if (k.toLowerCase().includes('conductor')) {
+          delete data[k];
+          modified = true;
+        }
+      }
+      if (modified) {
+        fs.writeFileSync(piInstalledPath, JSON.stringify(data, null, 2), 'utf8');
+        console.log('Unregistered Conductor from ~/.omp/plugins/installed_plugins.json');
+      }
+    } catch {}
+  }
+
+  console.log('\x1b[32mConductor global links and registrations removed.\x1b[0m');
+}
+
 switch (command.toLowerCase()) {
+  case 'doctor':
+    runDoctor();
+    break;
+  case 'update':
+    runUpdate();
+    break;
+  case 'uninstall':
+    runUninstall();
+    break;
+  case 'install':
+    if (args.includes('--local') || args.includes('-l')) {
+      runLocalScaffold();
+    } else {
+      console.log('To install globally, run ./install.sh (or "conductor install --local" for current project).');
+    }
+    break;
   case 'setup':
     console.log('Full Conductor setup is driven by the conductor-setup skill in an AI agent session.');
     console.log('Running the resumption check to show the current setup state:');
@@ -60,12 +398,17 @@ switch (command.toLowerCase()) {
   case 'status':
     showStatus();
     break;
+  case 'version':
+  case '--version':
+  case '-v':
+    console.log(`Conductor v${VERSION}`);
+    break;
   case 'new-track':
   case 'implement':
   case 'review':
   case 'revert':
   case 'orchestrate':
-    console.log(`Command "${command}" ready. When using AI coding agents (Pi, Claude Code, GitHub Copilot), invoke the corresponding skill or prompt: /conductor-${command}`);
+    console.log(`Command "${command}" ready. When using AI coding agents (Pi, Claude Code, GitHub Copilot, Antigravity), invoke the corresponding skill or prompt: /conductor-${command}`);
     break;
   case 'help':
   case '--help':

@@ -37,65 +37,48 @@ All state stays in plain Markdown and JSON files inside the `conductor/` directo
 
 ---
 
-## Installation
+## Quick Start & Installation
 
-### 1. Pi / Oh-My-Pi
+Install Conductor globally for all your AI coding agents with a single command:
 
-To install globally:
-
+### Linux / macOS / WSL
 ```bash
-# Copy to the Pi plugin cache
-cp -r conductor-agent-plugin ~/.omp/plugins/cache/plugins/conductor-marketplace___conductor___1.2.0
+curl -fsSL https://raw.githubusercontent.com/T-450/conductor-agent-plugin/main/install.sh | bash
 ```
 
-Add this block to `~/.omp/plugins/installed_plugins.json`:
-
-```json
-"conductor@conductor-marketplace": [
-  {
-    "scope": "user",
-    "installPath": "~/.omp/plugins/cache/plugins/conductor-marketplace___conductor___1.2.0",
-    "version": "1.2.0"
-  }
-]
+### Windows (PowerShell)
+```powershell
+irm https://raw.githubusercontent.com/T-450/conductor-agent-plugin/main/install.ps1 | iex
 ```
 
-To install in a single project only:
+The installer automatically detects active harnesses (**Pi / Oh-My-Pi**, **Claude Code**, **GitHub Copilot CLI**, and **Gemini CLI / Antigravity**), configures plugins and skill registries, links the terminal CLI bridge, and runs an automated health check (`conductor doctor`).
+
+---
+
+## Workspace-Local Scaffolding
+
+To install Conductor into a specific repository only:
 
 ```bash
-mkdir -p .omp/skills
-cp -r conductor-agent-plugin/skills/* .omp/skills/
+conductor install --local
+# OR directly from source:
+./install.sh --local
 ```
 
-### 2. GitHub Copilot CLI
+This injects `.github/` prompt templates for Copilot, `.omp/skills/` for Pi, and `.agents/skills/` for Antigravity/Claude into the current workspace.
 
-Conductor includes instructions for GitHub Copilot in `.github/copilot-instructions.md`.
+---
 
-To run from your terminal:
+## CLI Lifecycle Management
 
-```bash
-# Run CLI directly
-./bin/conductor status
-./bin/conductor setup
-```
-
-To ask Copilot in terminal:
+Conductor provides a terminal binary (`conductor`) with built-in health diagnostics and self-maintenance:
 
 ```bash
-gh copilot suggest "Plan a new authentication feature using Conductor"
-```
-
-### 3. Claude Code
-
-```bash
-claude plugin marketplace add /path/to/conductor-agent-plugin
-claude plugin install conductor
-```
-
-### 4. Gemini CLI / Antigravity
-
-```bash
-agy plugins install https://github.com/T-450/conductor-agent-plugin
+conductor doctor      # Verify installation health, manifests, and harness discovery
+conductor update      # Pull latest updates and refresh harness registrations
+conductor uninstall   # Remove Conductor symlinks and registrations
+conductor status      # Display project SDD progress and track metrics
+conductor setup       # Check resumption state for current project
 ```
 
 ---
