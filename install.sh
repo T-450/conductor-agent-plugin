@@ -164,6 +164,7 @@ if [ "$DETECT_PI" = true ]; then
   echo -e "  -> Configuring ${GREEN}Pi / Oh-My-Pi${RESET}..."
   mkdir -p "$HOME/.omp/plugins/cache/plugins"
   mkdir -p "$HOME/.omp/agent/skills"
+  mkdir -p "$HOME/.omp/agent/commands"
   
   # Register in installed_plugins.json
   PLUGINS_JSON="$HOME/.omp/plugins/installed_plugins.json"
@@ -195,20 +196,49 @@ with open(p, 'w') as f:
       ln -sfn "$skill" "$HOME/.omp/agent/skills/$sname" 2>/dev/null || true
     fi
   done
+
+  # Link commands to ~/.omp/agent/commands
+  for cmd in "$SRC_DIR"/commands/*.md; do
+    if [ -f "$cmd" ]; then
+      cname=$(basename "$cmd")
+      ln -sfn "$cmd" "$HOME/.omp/agent/commands/$cname" 2>/dev/null || true
+    fi
+  done
 fi
 
 # 2. Claude Code Configuration
 if [ "$DETECT_CLAUDE" = true ]; then
   echo -e "  -> Configuring ${GREEN}Claude Code${RESET}..."
   mkdir -p "$HOME/.claude/plugins"
+  mkdir -p "$HOME/.claude/commands"
   ln -sfn "$SRC_DIR" "$HOME/.claude/plugins/conductor" 2>/dev/null || true
+  for cmd in "$SRC_DIR"/commands/*.md; do
+    if [ -f "$cmd" ]; then
+      cname=$(basename "$cmd")
+      ln -sfn "$cmd" "$HOME/.claude/commands/$cname" 2>/dev/null || true
+    fi
+  done
 fi
 
 # 3. Gemini CLI / Antigravity Configuration
 if [ "$DETECT_GEMINI" = true ]; then
   echo -e "  -> Configuring ${GREEN}Gemini CLI & Antigravity${RESET}..."
   mkdir -p "$HOME/.gemini/config/plugins"
+  mkdir -p "$HOME/.gemini/config/agents"
+  mkdir -p "$HOME/.gemini/config/commands"
   ln -sfn "$SRC_DIR" "$HOME/.gemini/config/plugins/conductor" 2>/dev/null || true
+  for agent in "$SRC_DIR"/agents/*.md; do
+    if [ -f "$agent" ]; then
+      aname=$(basename "$agent")
+      ln -sfn "$agent" "$HOME/.gemini/config/agents/$aname" 2>/dev/null || true
+    fi
+  done
+  for cmd in "$SRC_DIR"/commands/*.md; do
+    if [ -f "$cmd" ]; then
+      cname=$(basename "$cmd")
+      ln -sfn "$cmd" "$HOME/.gemini/config/commands/$cname" 2>/dev/null || true
+    fi
+  done
 fi
 
 # 4. GitHub Copilot CLI Configuration

@@ -176,7 +176,43 @@ function runDoctor() {
     }
   });
 
-  // 4. UX Adapter Rules
+  // 4. Subagents
+  const expectedAgents = [
+    'orchestra-planning.md',
+    'orchestra-implement.md',
+    'orchestra-code-review.md'
+  ];
+
+  expectedAgents.forEach(a => {
+    const agentPath = path.join(PKG_ROOT, 'agents', a);
+    if (fs.existsSync(agentPath)) {
+      report('Agent', `${a} verified`, true);
+    } else {
+      report('Agent', `${a}`, false, 'Agent definition missing in agents/');
+    }
+  });
+
+  // 5. Slash Commands
+  const expectedCommands = [
+    'conductor-setup.md',
+    'conductor-new-track.md',
+    'conductor-implement.md',
+    'conductor-review.md',
+    'conductor-status.md',
+    'conductor-revert.md',
+    'conductor-orchestrate.md'
+  ];
+
+  expectedCommands.forEach(c => {
+    const cmdPath = path.join(PKG_ROOT, 'commands', c);
+    if (fs.existsSync(cmdPath)) {
+      report('Command', `${c} verified`, true);
+    } else {
+      report('Command', `${c}`, false, 'Command definition missing in commands/');
+    }
+  });
+
+  // 6. UX Adapter Rules
   const expectedRules = [
     'conductor_pi.md',
     'conductor_antigravity.md',
@@ -194,7 +230,7 @@ function runDoctor() {
     }
   });
 
-  // 5. Resumption Logic Execution Test
+  // 7. Resumption Logic Execution Test
   const resumeScript = path.join(PKG_ROOT, 'skills', 'conductor-setup', 'scripts', 'resume.py');
   const runTest = spawnSync(pyCmd, [resumeScript], { encoding: 'utf8' });
   if (runTest.status === 0) {
@@ -300,12 +336,20 @@ function runLocalScaffold() {
   copyDirRecursive(skillsSrc, path.join(cwd, '.omp', 'skills'));
   copyDirRecursive(skillsSrc, path.join(cwd, '.agents', 'skills'));
 
-  // 3. Copy rules into rules/
+  // 3. Copy agents into .agents/agents
+  const agentsSrc = path.join(PKG_ROOT, 'agents');
+  copyDirRecursive(agentsSrc, path.join(cwd, '.agents', 'agents'));
+
+  // 4. Copy commands into .agents/commands
+  const commandsSrc = path.join(PKG_ROOT, 'commands');
+  copyDirRecursive(commandsSrc, path.join(cwd, '.agents', 'commands'));
+
+  // 5. Copy rules into rules/
   const rulesSrc = path.join(PKG_ROOT, 'rules');
   copyDirRecursive(rulesSrc, path.join(cwd, 'rules'));
 
   console.log('\x1b[32mSuccessfully scaffolded Conductor into workspace!\x1b[0m');
-  console.log('Configured: .github/ (Copilot), .omp/skills/ (Pi), .agents/skills/ (AGY/Claude)');
+  console.log('Configured: .github/ (Copilot), .omp/skills/ (Pi), .agents/ (AGY/Claude)');
 }
 
 function copyDirRecursive(src, dest) {

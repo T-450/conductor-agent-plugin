@@ -18,9 +18,24 @@
     "./skills/conductor-revert",
     "./skills/conductor-orchestrate"
   ],
+  "agents": [
+    "./agents/orchestra-planning.md",
+    "./agents/orchestra-implement.md",
+    "./agents/orchestra-code-review.md"
+  ],
+  "commands": [
+    "./commands/conductor-setup.md",
+    "./commands/conductor-new-track.md",
+    "./commands/conductor-implement.md",
+    "./commands/conductor-review.md",
+    "./commands/conductor-status.md",
+    "./commands/conductor-revert.md",
+    "./commands/conductor-orchestrate.md"
+  ],
   "rules": [
     "./rules/conductor_pi.md",
     "./conductor_antigravity.md",
+    "./rules/conductor_antigravity.md",
     "./rules/conductor_orchestrate_pi.md",
     "./rules/conductor_orchestrate_copilot.md",
     "./rules/conductor_orchestrate_agy.md"

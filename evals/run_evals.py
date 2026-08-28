@@ -59,7 +59,7 @@ def test_skills_frontmatter(base_dir: Path):
     print(f"  -> All {len(skills)} skills verified with correct frontmatter and structure.")
 
 def test_rules(base_dir: Path):
-    print("[3/6] Testing rule definitions...")
+    print("[3/7] Testing rule definitions...")
     rules = [
         base_dir / "rules" / "conductor_pi.md",
         base_dir / "conductor_antigravity.md",
@@ -76,8 +76,33 @@ def test_rules(base_dir: Path):
         assert "description:" in content, f"Missing description in {r}"
     print("  -> All UX adapter rules verified.")
 
+def test_agents_and_commands(base_dir: Path):
+    print("[4/7] Testing subagents and slash commands...")
+    agents = ["orchestra-planning.md", "orchestra-implement.md", "orchestra-code-review.md"]
+    for a in agents:
+        agent_path = base_dir / "agents" / a
+        assert agent_path.exists(), f"Missing agent: {a}"
+        content = agent_path.read_text(encoding="utf-8")
+        assert "subagent: true" in content, f"Missing subagent: true in {a}"
+
+    commands = [
+        "conductor-setup.md",
+        "conductor-new-track.md",
+        "conductor-implement.md",
+        "conductor-review.md",
+        "conductor-status.md",
+        "conductor-revert.md",
+        "conductor-orchestrate.md",
+    ]
+    for c in commands:
+        cmd_path = base_dir / "commands" / c
+        assert cmd_path.exists(), f"Missing command: {c}"
+        content = cmd_path.read_text(encoding="utf-8")
+        assert "name:" in content, f"Missing name: in {c}"
+    print(f"  -> All {len(agents)} subagents and {len(commands)} slash commands verified.")
+
 def test_resume_script(base_dir: Path):
-    print("[4/6] Testing resume.py script logic...")
+    print("[5/7] Testing resume.py script logic...")
     script_path = base_dir / "skills" / "conductor-setup" / "scripts"
     spec = importlib.util.spec_from_file_location("conductor_resume", script_path / "resume.py")
     resume = importlib.util.module_from_spec(spec)
@@ -90,7 +115,7 @@ def test_resume_script(base_dir: Path):
     print("  -> resume.py executed successfully and returned valid status schema.")
 
 def test_assets(base_dir: Path):
-    print("[5/6] Testing assets and styleguides...")
+    print("[6/7] Testing assets and styleguides...")
     setup_assets = base_dir / "skills" / "conductor-setup" / "assets"
     assert (setup_assets / "workflow.md").exists(), "Missing workflow.md"
     assert (setup_assets / "catalog.md").exists(), "Missing catalog.md"
@@ -103,7 +128,7 @@ def test_assets(base_dir: Path):
     print(f"  -> All {len(required_guides)} code styleguides and assets verified.")
 
 def test_doctor_cli(base_dir: Path):
-    print("[6/6] Testing conductor doctor CLI diagnostic...")
+    print("[7/7] Testing conductor doctor CLI diagnostic...")
     import subprocess
     res = subprocess.run(["node", str(base_dir / "bin" / "conductor"), "doctor"], capture_output=True, text=True)
     assert res.returncode == 0, f"conductor doctor exited with non-zero code {res.returncode}: {res.stderr}"
@@ -118,11 +143,12 @@ def run_benchmark():
     test_manifests(base_dir)
     test_skills_frontmatter(base_dir)
     test_rules(base_dir)
+    test_agents_and_commands(base_dir)
     test_resume_script(base_dir)
     test_assets(base_dir)
     test_doctor_cli(base_dir)
     print("==================================================")
-    print("   ALL EVALS PASSED (6/6) - 100% SCORE GRADE A+   ")
+    print("   ALL EVALS PASSED (7/7) - 100% SCORE GRADE A+   ")
     print("==================================================")
 
 if __name__ == "__main__":
