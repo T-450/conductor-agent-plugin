@@ -2,7 +2,7 @@
 name: conductor-setup
 description: Scaffolds the project and sets up the Conductor environment. Use this whenever a project needs to be initialized or if the Conductor configuration is missing.
 metadata:
-  version: "1.2.0"
+  version: "1.3.0"
 ---
 
 # Conductor Setup Skill

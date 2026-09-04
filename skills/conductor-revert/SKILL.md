@@ -2,7 +2,7 @@
 name: conductor-revert
 description: Reverts previous work (tracks, phases, or tasks) by identifying associated commits and performing Git reverts.
 metadata:
-  version: "1.2.0"
+  version: "1.3.0"
 ---
 
 # Conductor Revert Skill

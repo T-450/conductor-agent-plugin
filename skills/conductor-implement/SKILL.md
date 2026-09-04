@@ -2,7 +2,7 @@
 name: conductor-implement
 description: Executes the tasks defined in the specified track's plan. Use this to start or continue working on a feature, bug fix, or chore.
 metadata:
-  version: "1.2.0"
+  version: "1.3.0"
 ---
 
 # Conductor Implement Skill

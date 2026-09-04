@@ -2,7 +2,7 @@
 name: conductor-status
 description: Displays the current progress of the project by parsing the Tracks Registry and individual track plans.
 metadata:
-  version: "1.2.0"
+  version: "1.3.0"
 ---
 
 # Conductor Status Skill

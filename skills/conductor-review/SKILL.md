@@ -2,7 +2,7 @@
 name: conductor-review
 description: Reviews the completed track work against guidelines and the plan. Acts as a Principal Software Engineer to ensure quality and compliance.
 metadata:
-  version: "1.2.0"
+  version: "1.3.0"
 ---
 
 # Conductor Review Skill

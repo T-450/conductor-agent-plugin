@@ -2,7 +2,7 @@
 name: conductor-new-track
 description: Plans a new track (feature or bug fix), generates spec/plan documents, and updates the registry.
 metadata:
-  version: "1.2.0"
+  version: "1.3.0"
 ---
 
 # Conductor New Track Skill
