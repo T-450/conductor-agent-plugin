@@ -86,13 +86,15 @@ def compute_aggregate_metrics(trial_results: Dict[str, list], k_values: list = N
         c = sum(1 for t in trials if t.get("passed", False))
         total_trials += n
         total_successes += c
-        
+
         for k in k_values:
-            if n >= k:
-                p_k = calculate_pass_at_k(n, c, k)
-                pass_at_k_scores[f"pass@{k}"].append(p_k)
-                p_pow_k = calculate_pass_pow_k(n, c, k)
-                pass_pow_k_scores[f"pass^{k}"].append(p_pow_k)
+            # Always score every k: calculate_pass_at_k falls back to the
+            # empirical rate (c/n) when n < k, so small-trial suites report
+            # their true rate instead of a misleading 0.0 from an empty average.
+            p_k = calculate_pass_at_k(n, c, k)
+            pass_at_k_scores[f"pass@{k}"].append(p_k)
+            p_pow_k = calculate_pass_pow_k(n, c, k)
+            pass_pow_k_scores[f"pass^{k}"].append(p_pow_k)
                 
     summary = {}
     for k in k_values:

@@ -26,16 +26,24 @@ class RegressionTracker:
             return json.load(f)
             
     @staticmethod
-    def compare(baseline: Dict[str, Any], candidate: Dict[str, Any]) -> Dict[str, Any]:
+    def compare(baseline: Dict[str, Any], candidate: Dict[str, Any],
+                degradation_threshold: float = 0.5) -> Dict[str, Any]:
         """
         Compares candidate eval results against a baseline.
         Returns detailed delta analysis, including regressions, improvements, and metrics changes.
+
+        Besides full pass->fail flips, a case counts as a regression when its
+        pass@1 drops severely: relative drop >= degradation_threshold AND
+        absolute drop >= degradation_threshold (default 0.5/0.5, so a single
+        flaky trial out of 3 is a warning, not a gate failure). Smaller drops
+        are recorded in the non-blocking ``warnings`` list.
         """
         baseline_cases = {c["case_id"]: c for c in baseline.get("cases", [])}
         candidate_cases = {c["case_id"]: c for c in candidate.get("cases", [])}
-        
+
         regressions = []
         improvements = []
+        warnings = []
         unchanged_pass = []
         unchanged_fail = []
         latency_changes = []
@@ -59,15 +67,30 @@ class RegressionTracker:
             b_p1 = b_case.get("pass_at_1", 0.0)
             c_p1 = c_case.get("pass_at_1", 0.0)
             
-            # Regression check
+            # Regression check: full pass->fail flip, or severe partial degradation.
             if b_p1 > 0.0 and c_p1 == 0.0:
                 regressions.append({
                     "case_id": cid,
                     "name": c_case.get("name", cid),
-                    "baseline_pass@1": b_p1,
-                    "candidate_pass@1": c_p1,
+                    "baseline_pass@1": round(b_p1, 4),
+                    "candidate_pass@1": round(c_p1, 4),
                     "reason": "Case previously passed, now failing"
                 })
+            elif b_p1 > 0.0 and c_p1 < b_p1:
+                abs_drop = b_p1 - c_p1
+                rel_drop = abs_drop / b_p1
+                entry = {
+                    "case_id": cid,
+                    "name": c_case.get("name", cid),
+                    "baseline_pass@1": b_p1,
+                    "candidate_pass@1": round(c_p1, 4),
+                    "reason": (f"Partial degradation: pass@1 {b_p1:.2f} -> {c_p1:.2f} "
+                               f"(relative drop {rel_drop*100:.0f}%)")
+                }
+                if rel_drop >= degradation_threshold and abs_drop >= degradation_threshold:
+                    regressions.append(entry)
+                else:
+                    warnings.append(entry)
             elif b_p1 == 0.0 and c_p1 > 0.0:
                 improvements.append({
                     "case_id": cid,
@@ -100,8 +123,10 @@ class RegressionTracker:
             "has_regressions": has_regressions,
             "regressions_count": len(regressions),
             "improvements_count": len(improvements),
+            "warnings_count": len(warnings),
             "regressions": regressions,
             "improvements": improvements,
+            "warnings": warnings,
             "summary": {
                 "baseline_accuracy": b_metrics.get("overall_accuracy", 0.0),
                 "candidate_accuracy": c_metrics.get("overall_accuracy", 0.0),

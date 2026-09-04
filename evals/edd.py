@@ -29,6 +29,7 @@ if str(base_eval_dir) not in sys.path:
 from engine.runner import EvalRunner
 from engine.regression import RegressionTracker
 from engine.benchmark import ModelBenchmarkHarness
+from engine.validate import validate_case
 
 def load_cases(cases_dir: Path, filter_id: str = None) -> list:
     cases = []
@@ -40,6 +41,13 @@ def load_cases(cases_dir: Path, filter_id: str = None) -> list:
                 data = json.load(f)
                 if filter_id and data.get("id") != filter_id and p.stem != filter_id:
                     continue
+                # Warn-and-keep: flag vacuous/unwinnable cases without dropping
+                # them (dropping would false-trip the regression missing-case rule).
+                report = validate_case(data)
+                for msg in report["errors"]:
+                    print(f"Error: eval case '{report['case_id']}': {msg}", file=sys.stderr)
+                for msg in report["warnings"]:
+                    print(f"Warning: eval case '{report['case_id']}': {msg}", file=sys.stderr)
                 cases.append(data)
         except Exception as err:
             print(f"Warning: Failed to load {p.name}: {err}", file=sys.stderr)
@@ -115,6 +123,12 @@ def cmd_regression(args):
     print(f"Accuracy Delta:    {comparison['summary']['accuracy_delta']*100:+.1f}%")
     print(f"pass@3 Delta:      {comparison['summary']['pass@3_delta']*100:+.1f}%")
     
+    warnings = comparison.get("warnings", [])
+    if warnings:
+        print("\n[~] NON-BLOCKING WARNINGS (partial pass@1 degradation):")
+        for w in warnings:
+            print(f"  - WARN: {w['name']} ({w['case_id']}): {w['reason']}")
+
     if comparison["has_regressions"]:
         print("\n[!] REGRESSIONS DETECTED:")
         for r in comparison["regressions"]:
@@ -167,6 +181,9 @@ def cmd_define(args):
     cases_dir.mkdir(parents=True, exist_ok=True)
     target_file = cases_dir / f"{case_id}.json"
     
+    # Fail-closed scaffold: the placeholder pattern matches nothing and the
+    # mock lacks the required token, so the case FAILS until the author
+    # replaces both with real criteria and representative output.
     template = {
         "id": case_id,
         "name": case_name,
@@ -175,9 +192,9 @@ def cmd_define(args):
         "description": f"Evaluation case for {case_name}",
         "expected": {
             "must_contain": ["expected_key_token"],
-            "regex_patterns": [r".*"]
+            "regex_patterns": ["TODO-replace-with-a-discriminating-pattern"]
         },
-        "mock_output": "Sample output matching criteria"
+        "mock_output": "TODO: replace with representative agent output"
     }
     
     with open(target_file, "w", encoding="utf-8") as f:

@@ -25,29 +25,46 @@ class BaseGrader(ABC):
 
 class CodeGrader(BaseGrader):
     """
-    Deterministic code grader using shell commands, assertions, exit codes, and output checks.
+    Deterministic code grader using substring assertions, regex patterns, and
+    forbidden-output checks. All present criteria combine with AND: every
+    check must hold for the case to pass. Verdicts stay binary (score is
+    1.0/0.0); pass@k aggregation consumes only the boolean ``passed``.
     """
-    
+
     def evaluate(self, actual_output: Any, expected_criteria: Dict[str, Any]) -> Dict[str, Any]:
         passed = True
         reasons = []
         details = {}
-        
+        text = str(actual_output)
+
         # 1. Output string containment
         must_contain = expected_criteria.get("must_contain", [])
         for substr in must_contain:
-            if substr not in str(actual_output):
+            if substr not in text:
                 passed = False
                 reasons.append(f"Missing required substring: '{substr}'")
-                
+
         # 2. Output must NOT contain
         must_not_contain = expected_criteria.get("must_not_contain", [])
         for substr in must_not_contain:
-            if substr in str(actual_output):
+            if substr in text:
                 passed = False
                 reasons.append(f"Contained forbidden substring: '{substr}'")
-                
-                
+
+        # 3. Regex pattern checks (same semantics as RuleGrader)
+        patterns = expected_criteria.get("regex_patterns", [])
+        for pat in patterns:
+            try:
+                matched = re.search(pat, text, re.MULTILINE | re.DOTALL)
+            except re.error as err:
+                passed = False
+                reasons.append(f"Invalid regex pattern '{pat}': {err}")
+                continue
+            if not matched:
+                passed = False
+                reasons.append(f"Output did not match pattern: '{pat}'")
+
+
         score = 1.0 if passed else 0.0
         reasoning = "All deterministic code checks passed." if passed else "; ".join(reasons)
         return {
@@ -60,22 +77,45 @@ class CodeGrader(BaseGrader):
 
 class RuleGrader(BaseGrader):
     """
-    Rule and Schema grader using Regex patterns, JSON Schema, and structural constraints.
+    Rule and Schema grader using substring assertions, Regex patterns, JSON
+    Schema, and structural constraints. All present criteria combine with AND.
+    Verdicts stay binary (score is 1.0/0.0); pass@k aggregation consumes only
+    the boolean ``passed``.
     """
-    
+
     def evaluate(self, actual_output: Any, expected_criteria: Dict[str, Any]) -> Dict[str, Any]:
         passed = True
         reasons = []
-        
-        # 1. Regex pattern checks
-        patterns = expected_criteria.get("regex_patterns", [])
         text = str(actual_output)
+
+        # 1. Output string containment (previously silently ignored)
+        must_contain = expected_criteria.get("must_contain", [])
+        for substr in must_contain:
+            if substr not in text:
+                passed = False
+                reasons.append(f"Missing required substring: '{substr}'")
+
+        # 2. Output must NOT contain (previously silently ignored)
+        must_not_contain = expected_criteria.get("must_not_contain", [])
+        for substr in must_not_contain:
+            if substr in text:
+                passed = False
+                reasons.append(f"Contained forbidden substring: '{substr}'")
+
+        # 3. Regex pattern checks (invalid patterns fail closed, not crash)
+        patterns = expected_criteria.get("regex_patterns", [])
         for pat in patterns:
-            if not re.search(pat, text, re.MULTILINE | re.DOTALL):
+            try:
+                matched = re.search(pat, text, re.MULTILINE | re.DOTALL)
+            except re.error as err:
+                passed = False
+                reasons.append(f"Invalid regex pattern '{pat}': {err}")
+                continue
+            if not matched:
                 passed = False
                 reasons.append(f"Output did not match pattern: '{pat}'")
                 
-        # 2. JSON Structure validation
+        # 4. JSON Structure validation
         json_schema = expected_criteria.get("json_schema")
         if json_schema:
             try:
@@ -88,7 +128,7 @@ class RuleGrader(BaseGrader):
                 passed = False
                 reasons.append(f"JSON parsing error: {e}")
                 
-        # 3. Checkbox markdown integrity (e.g. [ ], [~], [x])
+        # 5. Checkbox markdown integrity (e.g. [ ], [~], [x])
         required_checkboxes = expected_criteria.get("checkbox_states")
         if required_checkboxes:
             for state in required_checkboxes:

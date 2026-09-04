@@ -10,7 +10,7 @@ import importlib.util
 from pathlib import Path
 
 def test_manifests(base_dir: Path):
-    print("[1/6] Testing manifests and installer scripts...")
+    print("[1/7] Testing manifests and installer scripts...")
     manifest_files = [
         base_dir / "plugin.json",
         base_dir / ".claude-plugin" / "plugin.json",
