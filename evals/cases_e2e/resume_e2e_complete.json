@@ -1,0 +1,17 @@
+{
+  "id": "resume_e2e_complete",
+  "name": "E2E Resume: Complete Setup Reports Done",
+  "category": "e2e",
+  "grader_type": "rule",
+  "description": "Executor runs resume.py in a fixture with all chain artifacts plus index.md. Passes only if setup_complete is true and next_step is null.",
+  "executor_contract": "argv: python3 skills/conductor-setup/scripts/resume.py; cwd: fixture with full conductor/ incl. index.md; return: stdout text",
+  "requires_executor": true,
+  "expected": {
+    "must_contain": [
+      "\"setup_complete\": true",
+      "\"next_step\": null"
+    ]
+  },
+  "reference_output": "{\n  \"setup_complete\": true,\n  \"checklist\": {\n    \"product.md\": true,\n    \"product-guidelines.md\": true,\n    \"tech-stack.md\": true,\n    \"code_styleguides\": true,\n    \"workflow.md\": true\n  },\n  \"next_step\": null\n}\n",
+  "reference_how": "live run of resume.py over non-empty fixtures (post content-aware fix)"
+}

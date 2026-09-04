@@ -8,6 +8,35 @@ import json
 import os
 import sys
 
+def _file_has_content(path):
+    """True iff path is a readable file with non-whitespace text.
+
+    Fail-closed: missing, unreadable, or blank files count as incomplete.
+    """
+    try:
+        with open(path, "r", encoding="utf-8", errors="replace") as f:
+            return bool(f.read().strip())
+    except OSError:
+        return False
+
+
+def _artifact_complete(path):
+    """True iff a setup artifact counts as done.
+
+    Files need non-whitespace content (a stub file is not a finished step);
+    directories need to contain at least one file.
+    """
+    if os.path.isdir(path):
+        try:
+            return any(
+                os.path.isfile(os.path.join(path, entry))
+                for entry in os.listdir(path)
+            )
+        except OSError:
+            return False
+    return _file_has_content(path)
+
+
 def determine_resumption():
     """Checks existing setup artifacts and returns the next unblocked step."""
     conductor_dir = "conductor"
@@ -22,9 +51,9 @@ def determine_resumption():
     checklist = {}
     for filename in files:
         path = os.path.join(conductor_dir, filename)
-        checklist[filename] = os.path.exists(path)
+        checklist[filename] = _artifact_complete(path)
 
-    setup_complete = os.path.exists(os.path.join(conductor_dir, "index.md"))
+    setup_complete = _file_has_content(os.path.join(conductor_dir, "index.md"))
 
     next_step = None
 

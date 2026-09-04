@@ -1,0 +1,21 @@
+{
+  "id": "doctor_e2e_healthy",
+  "name": "E2E Doctor: Healthy Tree Reports Zero Failures",
+  "category": "e2e",
+  "grader_type": "rule",
+  "description": "Executor runs `node bin/conductor doctor`, strips ANSI codes, appends `exit_code: N`, and returns the text. Warning counts are env-dependent so only failures are pinned.",
+  "executor_contract": "argv: node bin/conductor doctor; cwd: repo root; return: ANSI-stripped stdout + 'exit_code: N' line",
+  "requires_executor": true,
+  "expected": {
+    "must_contain": [
+      "CONDUCTOR HEALTH DIAGNOSTIC",
+      "resume.py resumption check functional",
+      "exit_code: 0"
+    ],
+    "regex_patterns": [
+      "Results: \\d+ Passed, \\d+ Warnings, 0 Failures"
+    ]
+  },
+  "reference_output": "\n======================================================\n       CONDUCTOR HEALTH DIAGNOSTIC (v1.2.0)       \n======================================================\n\n [PASS] Runtime: Node.js runtime active (v26.7.0)\n [PASS] Runtime: Python runtime available (Python 3.14.7)\n [PASS] Runtime: Git runtime available (git version 2.55.0)\n [PASS] Manifest: package.json\n [PASS] Manifest: plugin.json\n [PASS] Manifest: gemini-extension.json\n [PASS] Manifest: .claude-plugin/plugin.json\n [PASS] Manifest: .claude-plugin/marketplace.json\n [PASS] Manifest: VERSION\n [PASS] Skill: conductor-setup verified\n [PASS] Skill: conductor-new-track verified\n [PASS] Skill: conductor-implement verified\n [PASS] Skill: conductor-review verified\n [PASS] Skill: conductor-status verified\n [PASS] Skill: conductor-revert verified\n [PASS] Skill: conductor-orchestrate verified\n [PASS] Agent: orchestra-planning.md verified\n [PASS] Agent: orchestra-implement.md verified\n [PASS] Agent: orchestra-code-review.md verified\n [PASS] Command: conductor-setup.md verified\n [PASS] Command: conductor-new-track.md verified\n [PASS] Command: conductor-implement.md verified\n [PASS] Command: conductor-review.md verified\n [PASS] Command: conductor-status.md verified\n [PASS] Command: conductor-revert.md verified\n [PASS] Command: conductor-orchestrate.md verified\n [PASS] Rule: conductor_pi.md verified\n [PASS] Rule: conductor_antigravity.md verified\n [PASS] Rule: conductor_orchestrate_pi.md verified\n [PASS] Rule: conductor_orchestrate_copilot.md verified\n [PASS] Rule: conductor_orchestrate_agy.md verified\n [PASS] Automation: resume.py resumption check functional\n\n--- Active Harness Discovery Status ---\n [PASS] Harness: Pi / Oh-My-Pi configured globally\n [PASS] Harness: Claude Code plugins directory detected\n [PASS] Harness: Gemini CLI / Antigravity plugin symlink active\n [PASS] Harness: GitHub Copilot instructions active in current workspace\n\n======================================================\nResults: 36 Passed, 0 Warnings, 0 Failures\n======================================================\n\nexit_code: 0\n",
+  "reference_how": "live run of `node bin/conductor doctor` at case-authoring time"
+}

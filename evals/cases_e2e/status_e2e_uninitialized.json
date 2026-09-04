@@ -1,0 +1,17 @@
+{
+  "id": "status_e2e_uninitialized",
+  "name": "E2E Status: Clean Directory Reports Not Initialized",
+  "category": "e2e",
+  "grader_type": "rule",
+  "description": "Executor runs `node bin/conductor status` with cwd set to an empty temp directory and returns stdout. Passes only if it reports uninitialized instead of inventing tracks.",
+  "executor_contract": "argv: node bin/conductor status; cwd: empty temp dir; return: stdout text",
+  "requires_executor": true,
+  "expected": {
+    "must_contain": [
+      "not initialized",
+      "conductor setup"
+    ]
+  },
+  "reference_output": "Conductor is not initialized in this directory. Run \"conductor setup\" to initialize.\n",
+  "reference_how": "live run of `node bin/conductor status` in an empty temp dir"
+}

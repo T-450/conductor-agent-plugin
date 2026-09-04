@@ -1,0 +1,19 @@
+{
+  "id": "resume_e2e_empty_file",
+  "name": "E2E Resume: Empty Artifact Counts as Incomplete",
+  "category": "e2e",
+  "grader_type": "rule",
+  "description": "Executor runs resume.py in a fixture with an EMPTY product.md and a non-empty tech-stack.md. Passes only if the empty file counts as incomplete and next_step falls back to Product Definition (chain order). Regression test for the exists-means-complete bug.",
+  "executor_contract": "argv: python3 skills/conductor-setup/scripts/resume.py; cwd: fixture with conductor/{product.md (0 bytes),tech-stack.md (non-empty)}; return: stdout text",
+  "requires_executor": true,
+  "expected": {
+    "json_schema": {"required": ["setup_complete", "checklist", "next_step"]},
+    "must_contain": [
+      "\"setup_complete\": false",
+      "\"step\": \"Product Definition\"",
+      "\"file\": \"product.md\""
+    ]
+  },
+  "reference_output": "{\n  \"setup_complete\": false,\n  \"checklist\": {\n    \"product.md\": false,\n    \"product-guidelines.md\": false,\n    \"tech-stack.md\": true,\n    \"code_styleguides\": false,\n    \"workflow.md\": false\n  },\n  \"next_step\": {\n    \"step\": \"Product Definition\",\n    \"file\": \"product.md\"\n  }\n}\n",
+  "reference_how": "hand-authored expected post-fix output; verified byte-equal to live resume.py output after the fix (see Task 2)"
+}

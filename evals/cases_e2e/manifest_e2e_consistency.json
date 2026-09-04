@@ -1,0 +1,19 @@
+{
+  "id": "manifest_e2e_consistency",
+  "name": "E2E Manifest: Every plugin.json Path Exists",
+  "category": "e2e",
+  "grader_type": "rule",
+  "description": "Executor resolves every skills/agents/commands/rules entry in plugin.json against the repo root, emits 'OK: <entry>' or 'MISSING: <entry>' per line plus a final 'missing: N' line, and returns the text.",
+  "executor_contract": "resolve plugin.json entries vs repo root; return per-entry OK/MISSING lines + 'missing: N'",
+  "requires_executor": true,
+  "expected": {
+    "must_contain": [
+      "missing: 0"
+    ],
+    "must_not_contain": [
+      "MISSING:"
+    ]
+  },
+  "reference_output": "OK: ./skills/conductor-setup\nOK: ./skills/conductor-new-track\nOK: ./skills/conductor-implement\nOK: ./skills/conductor-review\nOK: ./skills/conductor-status\nOK: ./skills/conductor-revert\nOK: ./skills/conductor-orchestrate\nOK: ./agents/orchestra-planning.md\nOK: ./agents/orchestra-implement.md\nOK: ./agents/orchestra-code-review.md\nOK: ./commands/conductor-setup.md\nOK: ./commands/conductor-new-track.md\nOK: ./commands/conductor-implement.md\nOK: ./commands/conductor-review.md\nOK: ./commands/conductor-status.md\nOK: ./commands/conductor-revert.md\nOK: ./commands/conductor-orchestrate.md\nOK: ./rules/conductor_pi.md\nOK: ./conductor_antigravity.md\nOK: ./rules/conductor_antigravity.md\nOK: ./rules/conductor_orchestrate_pi.md\nOK: ./rules/conductor_orchestrate_copilot.md\nOK: ./rules/conductor_orchestrate_agy.md\nmissing: 0\n",
+  "reference_how": "live plugin.json path resolution at case-authoring time (23 entries)"
+}

@@ -1,0 +1,18 @@
+{
+  "id": "resume_e2e_partial",
+  "name": "E2E Resume: Partial Progress Follows Chain Order",
+  "category": "e2e",
+  "grader_type": "rule",
+  "description": "Executor runs resume.py in a fixture with product.md and tech-stack.md present. Passes only if next_step is Product Guidelines (chain order), not the already-present tech-stack.md.",
+  "executor_contract": "argv: python3 skills/conductor-setup/scripts/resume.py; cwd: fixture with conductor/{product.md,tech-stack.md}; return: stdout text",
+  "requires_executor": true,
+  "expected": {
+    "must_contain": [
+      "\"setup_complete\": false",
+      "\"product-guidelines.md\": false",
+      "\"step\": \"Product Guidelines\""
+    ]
+  },
+  "reference_output": "{\n  \"setup_complete\": false,\n  \"checklist\": {\n    \"product.md\": true,\n    \"product-guidelines.md\": false,\n    \"tech-stack.md\": true,\n    \"code_styleguides\": false,\n    \"workflow.md\": false\n  },\n  \"next_step\": {\n    \"step\": \"Product Guidelines\",\n    \"file\": \"product-guidelines.md\"\n  }\n}\n",
+  "reference_how": "live run of resume.py over non-empty fixtures (post content-aware fix)"
+}
