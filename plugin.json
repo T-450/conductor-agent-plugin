@@ -16,7 +16,9 @@
     "./skills/conductor-review",
     "./skills/conductor-status",
     "./skills/conductor-revert",
-    "./skills/conductor-orchestrate"
+    "./skills/conductor-orchestrate",
+    "./skills/conductor-verify",
+    "./skills/conductor-demo"
   ],
   "agents": [
     "./agents/orchestra-planning.md",
@@ -30,7 +32,9 @@
     "./commands/conductor-review.md",
     "./commands/conductor-status.md",
     "./commands/conductor-revert.md",
-    "./commands/conductor-orchestrate.md"
+    "./commands/conductor-orchestrate.md",
+    "./commands/conductor-verify.md",
+    "./commands/conductor-demo.md"
   ],
   "rules": [
     "./rules/conductor_pi.md",

@@ -23,6 +23,7 @@ A custom agent is invocable by the primary agent only when its frontmatter sets 
 | Planning subagent | `.agents/agents/orchestra-planning.md` | `subagent: true`, read-only role |
 | Implement subagent | `.agents/agents/orchestra-implement.md` | `subagent: true` |
 | Code review subagent | `.agents/agents/orchestra-code-review.md` | `subagent: true`, read-only role |
+| Verify runner subagent | `.agents/agents/orchestra-verify-runner.md` | `subagent: true`, evidence-only role |
 
 ## 3. First-Use Materialization
 
@@ -52,6 +53,7 @@ Use the `invoke_subagent` tool once per role:
 | Planning | `invoke_subagent` for `orchestra-planning` with the user request + track spec; instruct: return findings only |
 | Implement | `invoke_subagent` for `orchestra-implement` with phase objective, files, tests, steps; no completion files or commit messages |
 | Review | `invoke_subagent` for `orchestra-code-review` with phase objective, acceptance criteria, modified files; review only, no fixes |
+| Verify run | `invoke_subagent` for `orchestra-verify-runner` with verify-runner role prompt + parent-named harness command; never `--holdout`; evidence only |
 
 ## 5. Monitoring
 

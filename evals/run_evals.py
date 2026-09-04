@@ -33,17 +33,21 @@ def test_manifests(base_dir: Path):
     assert (base_dir / "bin" / "conductor").exists(), "Missing bin/conductor"
     print("  -> All manifests, VERSION, and installer scripts verified.")
 
+def plugin_names(base_dir: Path, key: str, prefix: str):
+    """Derive expected names from plugin.json (source of truth)."""
+    manifest = json.loads((base_dir / "plugin.json").read_text(encoding="utf-8"))
+    entries = manifest.get(key, [])
+    assert entries, f"plugin.json '{key}' is empty or missing"
+    names = []
+    for entry in entries:
+        assert entry.startswith(prefix), f"Unexpected plugin.json '{key}' entry: {entry}"
+        names.append(entry[len(prefix):])
+    return names
+
+
 def test_skills_frontmatter(base_dir: Path):
     print("[2/6] Testing skill frontmatters and markdown integrity...")
-    skills = [
-        "conductor-setup",
-        "conductor-new-track",
-        "conductor-implement",
-        "conductor-review",
-        "conductor-status",
-        "conductor-revert",
-        "conductor-orchestrate",
-    ]
+    skills = plugin_names(base_dir, "skills", "./skills/")
     for s in skills:
         skill_path = base_dir / "skills" / s / "SKILL.md"
         if not skill_path.exists():
@@ -56,6 +60,10 @@ def test_skills_frontmatter(base_dir: Path):
         assert f"name: {s}" in frontmatter, f"Name mismatch in {s} frontmatter"
         assert "description:" in frontmatter, f"Missing description in {s} frontmatter"
         assert len(content) > 1000, f"Skill content in {s} is suspiciously short ({len(content)} chars)"
+    registered = set(skills)
+    for d in sorted((base_dir / "skills").iterdir()):
+        if (d / "SKILL.md").is_file():
+            assert d.name in registered, f"Skill '{d.name}' exists but is not registered in plugin.json"
     print(f"  -> All {len(skills)} skills verified with correct frontmatter and structure.")
 
 def test_rules(base_dir: Path):
@@ -85,20 +93,15 @@ def test_agents_and_commands(base_dir: Path):
         content = agent_path.read_text(encoding="utf-8")
         assert "subagent: true" in content, f"Missing subagent: true in {a}"
 
-    commands = [
-        "conductor-setup.md",
-        "conductor-new-track.md",
-        "conductor-implement.md",
-        "conductor-review.md",
-        "conductor-status.md",
-        "conductor-revert.md",
-        "conductor-orchestrate.md",
-    ]
+    commands = plugin_names(base_dir, "commands", "./commands/")
     for c in commands:
         cmd_path = base_dir / "commands" / c
         assert cmd_path.exists(), f"Missing command: {c}"
         content = cmd_path.read_text(encoding="utf-8")
         assert "name:" in content, f"Missing name: in {c}"
+    registered_cmds = set(commands)
+    for f in sorted((base_dir / "commands").glob("*.md")):
+        assert f.name in registered_cmds, f"Command '{f.name}' exists but is not registered in plugin.json"
     print(f"  -> All {len(agents)} subagents and {len(commands)} slash commands verified.")
 
 def test_resume_script(base_dir: Path):

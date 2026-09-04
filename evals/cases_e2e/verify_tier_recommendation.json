@@ -1,0 +1,19 @@
+{
+  "id": "verify_tier_recommendation",
+  "name": "E2E Verify: Tier Recommendation",
+  "category": "e2e",
+  "grader_type": "rule",
+  "description": "Executes the pure profiler function on the 4 gold fixtures and asserts exact tier match. Tests the profiler, not a mock containing tier strings.",
+  "executor_contract": "{\"cwd\": \".\", \"shell\": \"python3 skills/conductor-verify/assets/profile.py --check\", \"timeout_s\": 60}",
+  "requires_executor": true,
+  "expected": {
+    "must_contain": [
+      "TIER-MATCH: 4/4"
+    ],
+    "must_not_contain": [
+      "MISMATCH",
+      "ERROR:"
+    ]
+  },
+  "reference_output": "fixture: crud expected=T1 got=T1 total=2 -> OK\nfixture: pg-locking expected=T2 got=T2 total=4 -> OK\nfixture: mcu-timing expected=T3 got=T3 total=6 -> OK\nfixture: release-gate expected=T4 got=T4 total=2 -> OK\nTIER-MATCH: 4/4\n"
+}

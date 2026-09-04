@@ -106,6 +106,7 @@ Before starting the review process, you MUST locate and read the project's found
     -   Do the changes look like they are covered by existing tests?
     -   *Action:* **Execute the test suite automatically.** Infer the test command based on the codebase languages and structure (e.g., `npm test`, `pytest`, `go test`). Run it. Analyze the output for failures.
 5.  **Skill-Specific Checks:**
+6.  **Verify Evidence Audit (verify tracks only):** audit harness evidence against `verify/contract.json`; a `VERIFY_REGRESSED` track cannot pass (return it with the harness failure attached — the user picks fix-code vs fix-harness). An overridden-but-unapproved track passes only with the covering override logged and complete evidence, recorded class=`overridden`.
     -   If specific skills are installed (e.g. GCP), verify compliance with their best practices.
 
 ### 2.4 Output Findings

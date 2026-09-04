@@ -1,0 +1,19 @@
+{
+  "id": "verify_e2e_observed_red",
+  "name": "E2E Verify: Observed Red",
+  "category": "e2e",
+  "grader_type": "rule",
+  "description": "Executor runs a fixture harness live: the known-bad check must print a failing summary and the good check a passing one. Proves the e2e path executes commands and grades live stdout, never the reference.",
+  "executor_contract": "{\"cwd\": \"$TMP\", \"shell\": \"mkdir -p redgreen && cat > redgreen/harness.sh <<'EOF'\\n#!/bin/sh\\nif [ \\\"$1\\\" = bad ]; then echo '{\\\"passed\\\": 0, \\\"failed\\\": 1, \\\"skipped\\\": 0}'; exit 1; else echo '{\\\"passed\\\": 1, \\\"failed\\\": 0, \\\"skipped\\\": 0}'; exit 0; fi\\nEOF\\nchmod +x redgreen/harness.sh && echo '--- bad leg ---' && (./redgreen/harness.sh bad || true) && echo '--- good leg ---' && ./redgreen/harness.sh good\", \"timeout_s\": 60}",
+  "requires_executor": true,
+  "expected": {
+    "must_contain": [
+      "\"passed\": 0, \"failed\": 1",
+      "\"passed\": 1, \"failed\": 0"
+    ],
+    "must_not_contain": [
+      "ERROR:"
+    ]
+  },
+  "reference_output": "--- bad leg ---\n{\"passed\": 0, \"failed\": 1, \"skipped\": 0}\n--- good leg ---\n{\"passed\": 1, \"failed\": 0, \"skipped\": 0}\n"
+}

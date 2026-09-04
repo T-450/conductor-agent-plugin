@@ -30,11 +30,12 @@ Before spawning any subagent, detect which harness you are running in, then read
 | GitHub Copilot CLI | `rules/conductor_orchestrate_copilot.md` |
 | Antigravity CLI (agy) | `rules/conductor_orchestrate_agy.md` |
 
-The dispatch rule maps the three subagent roles below to the harness-native subagent primitive. The role prompts live in:
+The dispatch rule maps the four subagent roles below to the harness-native subagent primitive. The role prompts live in:
 
 - `skills/conductor-orchestrate/subagents/planning.md`
 - `skills/conductor-orchestrate/subagents/implement.md`
 - `skills/conductor-orchestrate/subagents/code-review.md`
+- `skills/conductor-orchestrate/subagents/verify-runner.md`
 
 Pass the role prompt content (or its path) to the subagent exactly as the dispatch rule instructs.
 
@@ -114,6 +115,7 @@ For each phase in `plan.md`, in order, execute this cycle.
    - **APPROVED:** Proceed to 4C.
    - **NEEDS_REVISION:** Return to 4A with the review's specific revision requirements. Track revision rounds per phase. After **2 revision rounds** on the same phase, treat the verdict as FAILED.
    - **FAILED:** Stop and consult the user for guidance on how to proceed.
+4. For verify tracks only: the review→re-implementation handoff gains a user-confirmation step — present the verdict and the planned fix, wait for user confirmation before re-implementing.
 
 ### 4C. Return to User for Commit
 
@@ -153,6 +155,7 @@ You MUST stop and wait for user input at exactly these points. Do NOT proceed pa
 1. After presenting the plan (before any implementation).
 2. After each phase is reviewed and the commit message is provided (before the next phase).
 3. After the final completion report.
+4. At the verify-gate pause (verify tracks only): after the mutation demo and before sign-off — present the red evidence and collect the verdict.
 
 ## 7. State Tracking
 

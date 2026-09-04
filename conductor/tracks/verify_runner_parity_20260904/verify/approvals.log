@@ -1,0 +1,7 @@
+2026-09-04T02:31:00Z | author=user | source=chat:pilot-interview | NOTE: pilot=verify-runner parity files; fixtures=canonical four (CRUD/PG-locking/MCU-timing/release-gate)
+2026-09-04T02:45:00Z | author=agent | source=trial:mutation1 | RED-DEMO hash=71146357ea7e9d50e8654779213c204fc99b26da6508864b4114ba847ab7fe1d result=fail checks=acc-2
+2026-09-04T04:46:15Z | author=user | source=chat:sign-off | verifict APPROVED
+2026-09-04T04:46:15Z | author=agent | source=trial:signoff | NOTE: verdict keyword misspelled by user; accepted as full-scope APPROVED on unambiguous intent and certain user authorship (no normalization applied to the quoted line above)
+2026-09-04T04:47:00Z | author=agent | source=trial:signoff | NEEDS-REVISION-CLASSIFICATION: full-scope APPROVED lacks scoped traceability verdict on file; recorded as NEEDS_REVISION (full-scope round 1), missing precondition stated
+2026-09-04T04:52:00Z | author=user | source=chat:traceability | verdict APPROVED scope=traceability
+2026-09-04T04:53:00Z | author=user | source=chat:sign-off | verdict APPROVED

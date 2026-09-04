@@ -16,6 +16,7 @@ Use the native `task` tool. One dispatch per subagent role; pass the role prompt
 | Planning subagent | `agent: "scout"` | Read-only research specialist; faster model, no edit permissions |
 | Implement subagent | default worker (omit `agent`) | Full edit/test capabilities for TDD execution |
 | Code review subagent | `agent: "code-reviewer"` | Read-only review specialist |
+| Verify runner subagent | default worker (omit `agent`) | Boots env, runs named harness command, reports evidence only |
 
 ## 2. Planning Subagent Dispatch
 
@@ -60,7 +61,20 @@ Collect the returned findings before drafting the plan.
 }
 ```
 
-## 5. Coordination Notes
+## 5. Verify Runner Subagent Dispatch
+
+```json
+{
+  "tasks": [
+    {
+      "name": "OrchestraVerify",
+      "task": "<paste skills/conductor-orchestrate/subagents/verify-runner.md content>\n\n# Task\nRun: <parent-named harness.sh --all or --check invocation>\nTrack verify dir: conductor/tracks/<track_id>/verify/\nNever run --holdout. Report evidence only; do not interpret results."
+    }
+  ]
+}
+```
+
+## 6. Coordination Notes
 
 - Steering: if the parent needs to send follow-up context mid-run, use `hub` send addressed to the spawned agent by its task name.
 - Results deliver automatically when the job settles; verify claimed changes before marking plan tasks complete.

@@ -151,16 +151,9 @@ function runDoctor() {
     }
   });
 
-  // 3. Core SDD Skills & Orchestration
-  const expectedSkills = [
-    'conductor-setup',
-    'conductor-new-track',
-    'conductor-implement',
-    'conductor-review',
-    'conductor-status',
-    'conductor-revert',
-    'conductor-orchestrate'
-  ];
+  // 3. Core SDD Skills & Orchestration (plugin.json is the source of truth)
+  const pluginManifest = JSON.parse(fs.readFileSync(path.join(PKG_ROOT, 'plugin.json'), 'utf8'));
+  const expectedSkills = pluginManifest.skills.map(s => s.replace(/^\.\/skills\//, ''));
 
   expectedSkills.forEach(s => {
     const skillPath = path.join(PKG_ROOT, 'skills', s, 'SKILL.md');
@@ -192,16 +185,8 @@ function runDoctor() {
     }
   });
 
-  // 5. Slash Commands
-  const expectedCommands = [
-    'conductor-setup.md',
-    'conductor-new-track.md',
-    'conductor-implement.md',
-    'conductor-review.md',
-    'conductor-status.md',
-    'conductor-revert.md',
-    'conductor-orchestrate.md'
-  ];
+  // 5. Slash Commands (plugin.json is the source of truth)
+  const expectedCommands = pluginManifest.commands.map(c => c.replace(/^\.\/commands\//, ''));
 
   expectedCommands.forEach(c => {
     const cmdPath = path.join(PKG_ROOT, 'commands', c);
@@ -211,6 +196,21 @@ function runDoctor() {
       report('Command', `${c}`, false, 'Command definition missing in commands/');
     }
   });
+
+  // plugin.json is the source of truth in both directions: unregistered
+  // files fail loudly so a missing registration cannot pass silently.
+  for (const d of fs.readdirSync(path.join(PKG_ROOT, 'skills'), { withFileTypes: true })) {
+    if (d.isDirectory() && fs.existsSync(path.join(PKG_ROOT, 'skills', d.name, 'SKILL.md'))) {
+      if (!expectedSkills.includes(d.name)) {
+        report('Skill', d.name, false, 'Exists but is not registered in plugin.json');
+      }
+    }
+  }
+  for (const f of fs.readdirSync(path.join(PKG_ROOT, 'commands'))) {
+    if (f.endsWith('.md') && !expectedCommands.includes(f)) {
+      report('Command', f, false, 'Exists but is not registered in plugin.json');
+    }
+  }
 
   // 6. UX Adapter Rules
   const expectedRules = [

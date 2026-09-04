@@ -36,6 +36,8 @@ Before starting the implementation process, you MUST locate and read the project
     -   **Workflow** (`workflow.md`)
     -   **Health Check:** You MUST verify that every linked file actually exists. If ANY of these core files are missing, HALT immediately. Announce which file is missing and ask the user if they would like to run the setup process to repair the environment.
 
+3.  **Verify Gate:** Read gate state via `conductor-verify --track <track_id> --status` (machine-readable; never parse state files directly). A missing `verify/` dir reads as `VERIFY_DRAFT`. Behavior: `VERIFY_APPROVED` → proceed; `VERIFY_DRAFT` / `USER_TRIAL` / `REFINING` without approval → warn and require a logged user override before proceeding (an in-chat "go ahead" without a log entry is a bypass); `VERIFY_FAILED` → refuse without fresh user direction; `VERIFY_REGRESSED` → stop, send the user the fix-code vs fix-harness choice, no override path.
+
 ---
 
 ## 2. Track Selection

@@ -14,6 +14,7 @@ These rules govern how the `conductor-orchestrate` skill spawns subagents inside
 | Planning subagent | `.github/agents/orchestra-planning.agent.md` | `orchestra-planning` |
 | Implement subagent | `.github/agents/orchestra-implement.agent.md` | `orchestra-implement` |
 | Code review subagent | `.github/agents/orchestra-code-review.agent.md` | `orchestra-code-review` |
+| Verify runner subagent | (uses `orchestra-implement` agent file with the verify-runner role prompt) | `orchestra-implement` + verify-runner prompt |
 
 Each agent file loads its shared role prompt from `skills/conductor-orchestrate/subagents/<role>.md` so the content has a single source of truth.
 
@@ -26,6 +27,7 @@ Use the `task` tool with `subagent_type` set to the dispatch name:
 | Planning | `task` with `subagent_type: "orchestra-planning"`, prompt = user request + track spec, instruction to return findings only |
 | Implement | `task` with `subagent_type: "orchestra-implement"`, prompt = phase objective, files, tests, steps; no completion files or commit messages |
 | Review | `task` with `subagent_type: "orchestra-code-review"`, prompt = phase objective, acceptance criteria, modified files; review only, no fixes |
+| Verify run | `task` with `subagent_type: "orchestra-implement"`, prompt = verify-runner role prompt + parent-named harness command; never `--holdout`; evidence only |
 
 ## 3. Programmatic Alternative
 

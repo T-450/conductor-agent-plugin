@@ -8,12 +8,15 @@ Commands:
   benchmark   Benchmark agent performance across model configurations
   define      Scaffold a new eval case definition
   report      Generate a markdown evaluation summary report
+  validate    CI gate over cases/ + cases_e2e/ (non-zero exit on errors)
 """
 
 import os
 import sys
 import json
 import argparse
+import subprocess
+import tempfile
 from pathlib import Path
 
 # Windows compatibility for UTF-8 output in CI
@@ -29,7 +32,29 @@ if str(base_eval_dir) not in sys.path:
 from engine.runner import EvalRunner
 from engine.regression import RegressionTracker
 from engine.benchmark import ModelBenchmarkHarness
-from engine.validate import validate_case
+from engine.validate import validate_case, validate_suite
+
+
+def cmd_validate(args):
+    total_errors = 0
+    total_warnings = 0
+    for sub in ("cases", "cases_e2e"):
+        cases = load_cases(base_eval_dir / sub)
+        report = validate_suite(cases)
+        total_errors += report["error_count"]
+        total_warnings += report["warning_count"]
+        print(f"{sub}: {report['total_cases']} cases, "
+              f"{report['error_count']} errors, {report['warning_count']} warnings")
+        for f in report["cases"]:
+            for msg in f["errors"]:
+                print(f"  Error: {f['case_id']}: {msg}")
+            for msg in f["warnings"]:
+                print(f"  Warning: {f['case_id']}: {msg}")
+    if args.json:
+        print(json.dumps({"error_count": total_errors,
+                          "warning_count": total_warnings}))
+    if total_errors:
+        sys.exit(1)
 
 def load_cases(cases_dir: Path, filter_id: str = None) -> list:
     cases = []
@@ -53,16 +78,57 @@ def load_cases(cases_dir: Path, filter_id: str = None) -> list:
             print(f"Warning: Failed to load {p.name}: {err}", file=sys.stderr)
     return cases
 
+def e2e_executor(case_spec, trial_index):
+    """Execute a live executor_contract and return stdout for grading.
+
+    Structured contract (JSON string): {"shell": "<sh>",
+    "cwd": "$TMP" | <dir>, "timeout_s": N}. Non-executable contracts and
+    skip_reason entries never reach here (filtered by e2e_skip_reason).
+    """
+    contract = json.loads(case_spec.get("executor_contract", ""))
+    shell = contract["shell"].replace("$REPO", str(base_eval_dir.parent))
+    cwd = contract.get("cwd", "$TMP")
+    if cwd == "$TMP":
+        cwd = tempfile.mkdtemp(prefix="edd_e2e_")
+    timeout = int(contract.get("timeout_s", 120))
+    proc = subprocess.run(shell, shell=True, cwd=cwd,
+                          capture_output=True, text=True, timeout=timeout)
+    return proc.stdout
+
+
+def e2e_skip_reason(case_spec):
+    """Classify without executing: None means runnable, else the reason."""
+    raw = case_spec.get("executor_contract", "")
+    try:
+        contract = json.loads(raw)
+    except (json.JSONDecodeError, TypeError):
+        return f"non-executable contract (free text): {str(raw)[:80]}"
+    if not isinstance(contract, dict) or "shell" not in contract:
+        return "contract has no executable 'shell' entry"
+    return contract.get("skip_reason")
+
+
 def cmd_run(args):
-    cases_dir = base_eval_dir / "cases"
+    e2e = bool(getattr(args, "e2e", False))
+    cases_dir = base_eval_dir / ("cases_e2e" if e2e else "cases")
     cases = load_cases(cases_dir, filter_id=args.case)
+    if e2e:
+        runnable = []
+        for c in cases:
+            reason = e2e_skip_reason(c)
+            if reason:
+                print(f"SKIP: {c.get('id', '?')} — {reason}")
+            else:
+                runnable.append(c)
+        cases = runnable
     if not cases:
         print(f"No eval cases found matching: {args.case or '*'}")
         sys.exit(1)
         
     print(f"Running {len(cases)} eval case(s) with {args.trials} trials per case...")
     runner = EvalRunner()
-    results = runner.run_suite(cases, trials_per_case=args.trials)
+    results = runner.run_suite(cases, trials_per_case=args.trials,
+                               executor_fn=e2e_executor if e2e else None)
     
     if args.json:
         print(json.dumps(results, indent=2))
@@ -210,6 +276,7 @@ def main():
     p_run.add_argument("case", nargs="?", default=None, help="Case ID to run (omit for all)")
     p_run.add_argument("--trials", "-t", type=int, default=3, help="Number of trials per case (default: 3)")
     p_run.add_argument("--json", action="store_true", help="Output raw JSON")
+    p_run.add_argument("--e2e", action="store_true", help="Run live executor cases from cases_e2e/ (non-executable contracts skip with a stated reason)")
     
     # Baseline
     p_base = subparsers.add_parser("baseline", help="Create or update golden baseline snapshot")
@@ -231,17 +298,22 @@ def main():
     p_def.add_argument("--category", choices=["capability", "regression", "adversarial"], default="capability")
     p_def.add_argument("--grader", choices=["rule", "code", "model", "human"], default="rule")
     
+    # Validate
+    p_val = subparsers.add_parser("validate", help="CI gate over cases/ + cases_e2e/")
+    p_val.add_argument("--json", action="store_true", help="Output raw JSON")
+
     args = parser.parse_args()
     if not args.command:
         parser.print_help()
         sys.exit(1)
-        
+
     cmd_map = {
         "run": cmd_run,
         "baseline": cmd_baseline,
         "regression": cmd_regression,
         "benchmark": cmd_benchmark,
-        "define": cmd_define
+        "define": cmd_define,
+        "validate": cmd_validate
     }
     
     cmd_map[args.command](args)

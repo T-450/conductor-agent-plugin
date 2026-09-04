@@ -181,5 +181,6 @@ Adhere to this sequence precisely.
 
 8.  **Completion & Next Steps:**
     -   Inform the user that the track creation is complete and the registry has been updated.
-    -   Ask the user if they would like to start the implementation right now using a **Yes/No question**.
+    -   Ask the user if they would like to open a verify track for it ("track planned — open a verify track for it?") BEFORE the implement question. If accepted, create `conductor/tracks/<track_id>/verify/` via the `conductor-verify` skill (`VERIFY_DRAFT`) first; declining leaves new-track output untouched.
+    -   Ask the user if they would like to start the implementation right now using a **Yes/No question** (with the verify gate warning attached when a verify track was just opened).
     -   **Internal Handoff:** If the user agrees, you MUST use the `conductor-implement` skill to begin work. Present the transition as a natural progression without mentioning the skill name.

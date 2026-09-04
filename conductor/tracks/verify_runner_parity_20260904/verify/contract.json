@@ -1,0 +1,30 @@
+{
+  "track": "verify_runner_parity_20260904",
+  "checks": [
+    {"id": "acc-1", "acceptance": "Copilot verify-runner agent file exists with name frontmatter and shared role-prompt reference", "tier": "T0",
+     "command": "./harness.sh --check acc-1",
+     "pass": "exit 0 and summary.failed == 0", "backend": "local",
+     "estimated_minutes": 1, "seam": false, "quarantine": false,
+     "profile": {"scores": {"state": 0, "deps": 0, "hw": 0, "blast": 0},
+                 "total": 0, "reason": "file-shape check, no runtime; user ratified"}},
+    {"id": "acc-2", "acceptance": "Agy verify-runner agent file exists with subagent:true and evidence-only role", "tier": "T0",
+     "command": "./harness.sh --check acc-2",
+     "pass": "exit 0 and summary.failed == 0", "backend": "local",
+     "estimated_minutes": 1, "seam": false, "quarantine": false,
+     "profile": {"scores": {"state": 0, "deps": 0, "hw": 0, "blast": 0},
+                 "total": 0, "reason": "file-shape check, no runtime; user ratified"}},
+    {"id": "acc-3", "acceptance": "Full repo gates stay green with the new files", "tier": "T0",
+     "command": "./harness.sh --check acc-3",
+     "pass": "exit 0 and summary.failed == 0", "backend": "local",
+     "estimated_minutes": 3, "seam": false, "quarantine": false,
+     "profile": {"scores": {"state": 0, "deps": 0, "hw": 0, "blast": 0},
+                 "total": 0, "reason": "existing suite re-run, no new runtime; user ratified"}}
+  ],
+  "backend": "local",
+  "backends": {
+    "local": {"template": "images/default/Dockerfile"}
+  },
+  "artifacts": ["verify/evidence/", "verify/metrics.json", "verify/baseline.log"],
+  "unfaithful": [],
+  "readiness": "n/a (T0 file-shape checks; no app to boot)"
+}
