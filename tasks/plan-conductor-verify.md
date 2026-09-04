@@ -290,11 +290,10 @@ Implement in vertical slices that each leave a walkable track state, proving eac
   `.agents/skills/conductor-world/SKILL.md` (EDD conventions, probe method,
   executor schema, bars, bidirectional derivation, multi-leg pattern).
   Treat as unreviewed until the user reviews it.
-- [ ] OPEN (needs your words): commit. Staged for it: specs/, plan file,
-  conductor-verify skill + assets, verify-runner role, 17 eval cases,
-  edd/run_evals/doctor derivation, handoff hunks, pilot track, parity agent
-  files, world skill. Left out: install.ps1 (pre-existing), kimi/log/
-  wireless files (yours), agents/ (pre-existing untracked).
+- [x] DONE: committed 0bfe8e7 (56 files) + version bump 03ab231
+  (1.4.0), both pushed to origin main. Guest KVM run green 3/3 verified
+  before push. Left out: install.ps1 (pre-existing), kimi/log/wireless
+  files (yours), agents/ (pre-existing untracked).
 
 ## Parallelization Opportunities
 
